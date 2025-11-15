@@ -1,118 +1,25 @@
-# React + TypeScript + Vite
+# Polyglot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A language learning App
 
-Currently, two official plugins are available:
+## Core Flow
 
+### Read stores in a foreign language
 
-## React Compiler
+Can click on any word to get a hint as to what it means (only for some languages. E.g. mandarin hints are pinyin). They can click again to get a definition.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### AI-Generated stories
 
-## Expanding the ESLint configuration
+The stories are AI-generated to match the user's level.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Progression Tracking
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The app tracks which words users need help on, and which words they don't. The app will bias the LLM output logits to prefer a mixture of words the user knows, words the user needs to work on, and words the user hasn't seen (in the app at least)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The app will also bias the LLM logits to prefer the most frequently-used words for beginner users.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The user will be able to see how many words they know, which words they've looked up, and an overall aptitude score based on that.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Confirm Understanding
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-## Jun Da Chinese Character Frequency Parser
-
-A helper script `scripts/parse_junda.py` was added to convert the Jun Da Chinese character frequency list into JSON. It produces an array of objects:
-
-```jsonc
-// Each object:
-{
-  "rank": 1,
-  "character": "的",
-  "frequency": 792438,
-  "pinyin": "de/di4",
-  "definition": "of; possessive particle ..."
-}
-```
-
-### Usage
-
-From the project root:
-
-```bash
-python3 scripts/parse_junda.py --input "data/junda chinese character frequency/Chinese character frequency list 汉字字频表.html" --top 200 --output junda_top200.json
-```
-
-If the local file lacks the raw rows, the script will try to fetch the remote source (`https://lingua.mtsu.edu/chinese-computing/statistics/char/list.php?Which=IM`). You can override with `--remote-url`.
-
-### Options
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--input, -i` | Path to saved HTML/plain file | optional |
-| `--output, -o` | Output JSON file | `junda_top.json` |
-| `--top, -n` | Number of top characters | `100` |
-| `--encoding, -e` | Encoding for local file | `gbk` |
-| `--remote-url` | Alternate source URL | built-in |
-
-### Dependencies
-
-Pure stdlib by default. (Optional) Install for richer HTML parsing / remote fetch:
-
-```bash
-pip install requests beautifulsoup4
-```
-
-### Notes
-
-The remote page sometimes renders without `<tr>` tags accessible to the simple parser. If you see `No rows parsed`, open the page in a browser, copy the visible frequency table, save it as a text file with tab separation, and rerun pointing `--input` to that cleaned file. Further enhancements could include a headless browser fetch.
+In hard mode, the app will force the user to summarize each story in 1-2 sentences. An AI will judge their summarization to determine if they pass. If not, they will see a reason they didn't pass, and will need to re-read to try again before continuing.
