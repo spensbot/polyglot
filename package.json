@@ -12,12 +12,15 @@
     "start": "pnpm dev"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
     "@tailwindcss/vite": "^4.1.17",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "hanzi": "^2.1.5",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.553.0",
+    "neverthrow": "^8.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.4.0",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
