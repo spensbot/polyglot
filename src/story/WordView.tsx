@@ -1,17 +1,16 @@
 import { cn } from "@/lib/utils"
 import { useAsync } from "@/util/hooks/useAsync"
-import { prettyPinyin } from "@/wordData/chinese/prettyPinyin"
-import { Hanzi } from "@/wordData/Hanzi"
-import { Word } from "@/wordData/Word"
+import { prettyPinyin } from "@/dictionary/chinese/prettyPinyin"
 import { Popover } from "radix-ui"
-import { ParsedWord } from "./storyUtil"
 import { useAppState, useDispatch } from "@/state/hooks"
 import { hint, clearHint } from "@/state/appSlice"
 import { Button } from "@/components/ui/button"
+import { ParsedWord } from "./ParsedStory"
+import { dict } from "@/dictionary/Dictionary"
 
 export function WordView({ word }: { word: ParsedWord }) {
   const hintLevel = useAppState((state) =>
-    state.hint?.word?.parsedId === word.parsedId ? state.hint.level : 0
+    state.hint?.word?.parsedId === word.parsedId ? state.hint?.level ?? 0 : 0
   )
   const dispatch = useDispatch()
 
@@ -49,7 +48,7 @@ export function WordView({ word }: { word: ParsedWord }) {
 }
 
 function HintView({ word }: { word: ParsedWord }) {
-  const entry = useAsync(() => Hanzi.definitionLookup(word.word), [word])
+  const entry = useAsync(() => dict.definitionLookup(word.word), [word])
   const dispatch = useDispatch()
 
   const hintLevel = useAppState((state) =>

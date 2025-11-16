@@ -28,5 +28,6 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
   );
 }
 
-/** A map from simplified character to frequency info */
-export const jundaMap = parseJunda(jundaText);
+export function loadJunda() {
+  return parseJunda(jundaText);
+}

@@ -1,9 +1,9 @@
-import { Hanzi } from "../wordData/Hanzi"
 import { stories } from "./stories"
 import { StoryId } from "./Story"
 import { WordView } from "./WordView"
-import { ParsedWord, parseStory } from "./storyUtil"
+import { parseStory } from "./parseStory"
 import { cn } from "@/lib/utils"
+import { ParsedWord } from "./ParsedStory"
 
 interface Props {
   className?: string

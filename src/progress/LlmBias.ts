@@ -1,4 +1,4 @@
-import { Word } from "@/wordData/Word";
+import { Word } from "@/dictionary/Word";
 
 /** Can be used to multiply llm logics by a bias factor for specific words.
  * 

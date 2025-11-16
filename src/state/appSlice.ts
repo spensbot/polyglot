@@ -1,11 +1,12 @@
 import { Progress, ProgressSchema, WordStats } from '@/progress/Progress'
 import { stories, nextStoryId } from '@/story/stories'
 import { HintSchema } from '@/story/Story'
-import { ParsedWord, parseStory } from '@/story/storyUtil'
-import { Word, WordSchema } from '@/wordData/Word'
+import { parseStory } from '@/story/parseStory'
+import { Word, WordSchema } from '@/dictionary/Word'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import z from 'zod'
+import { ParsedWord } from '@/story/ParsedStory'
 
 export const AppStateSchema = z.object({
   progress: ProgressSchema,

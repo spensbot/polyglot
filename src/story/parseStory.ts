@@ -1,11 +1,10 @@
-import { Word } from "@/wordData/Word";
-import { Story, StoryId } from "./Story";
-import { Hanzi } from "@/wordData/Hanzi";
-import { stories } from "./stories";
-import z from "zod";
+import { Word } from "@/dictionary/Word";
+import { Story } from "./Story";
+import { dict } from "@/dictionary/Dictionary";
+import { ParsedId, ParsedStory, ParsedWord } from "./ParsedStory";
 
 function parseLine(line: string): Word[] {
-  return Hanzi.segment(line);
+  return dict.segment(line);
 }
 
 function parseContent(content: string): Word[][] {
@@ -15,21 +14,6 @@ function parseContent(content: string): Word[][] {
   return rawLines.map(line => parseLine(line));
 }
 
-export const ParsedIdSchema = z.number().brand("parsedId");
-export type ParsedId = z.infer<typeof ParsedIdSchema>;
-
-export const ParsedWordSchema = z.object({
-  parsedId: ParsedIdSchema,
-  word: z.string().brand("Word"),
-});
-export type ParsedWord = z.infer<typeof ParsedWordSchema>;
-
-export interface ParsedStory {
-  story: Story;
-  parsedTitle: ParsedWord[];
-  parsedContent: ParsedWord[][];
-  parsedAll: ParsedWord[];
-}
 
 export function parseStory(story: Story): ParsedStory {
   let iWord = 0;

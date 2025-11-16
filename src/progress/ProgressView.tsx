@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { computeLevel, Progress } from "./Progress"
+import { computeLevel, knownWords, Progress } from "./Progress"
 import { Button } from "@/components/ui/button"
 import { useAppState, useDispatch } from "@/state/hooks"
 import { nextStory } from "@/state/appSlice"
@@ -11,7 +11,7 @@ interface Props {
 
 export function ProgressView({ className, progress }: Props) {
   const dispatch = useDispatch()
-  const level = computeLevel(progress)
+  const level = computeLevel(knownWords(progress))
 
   const words = Object.entries(progress.wordsSeen)
   const lookedUp = words.filter(([, stats]) => stats.nHints > 0)
@@ -19,8 +19,8 @@ export function ProgressView({ className, progress }: Props) {
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <p className="text-3xl mb-5">{level.name}</p>
-      <ProgressBar percent={level.progressionInLevel * 100} height="1rem" />
+      <p className="text-3xl mb-5">{level.level}</p>
+      <ProgressBar percent={level.progressToNext * 100} height="1rem" />
       <p className="opacity-50">{level.nKnownWords} known words</p>
       <div>
         <p>Looked Up: {lookedUp.map(([w]) => w).join(", ")}</p>

@@ -2,7 +2,7 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { Provider } from "react-redux"
 import { store } from "./state/store.ts"
-import "./app/index.css"
+import "./index.css"
 import App from "./app/App.tsx"
 
 document.documentElement.classList.add("dark")

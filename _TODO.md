@@ -1,5 +1,6 @@
 # Todos
 
+- Smaller hint and multitap
 - Integrate Open AI API to grade a user's understanding of a level before letting them proceed
 - Add all Junda Chars
 - Unified dictionary that contains hint levels for each word. During parsing, break words down if necessary to get a definition for each word.

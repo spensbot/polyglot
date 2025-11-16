@@ -1,16 +1,17 @@
-import { WordSchema } from "@/wordData/Word";
 import z from "zod";
-import { ParsedWordSchema } from "./storyUtil";
+import { ParsedWordSchema } from "./ParsedStory";
 
 export const StoryIdSchema = z.number().brand("StoryId");
 export type StoryId = z.infer<typeof StoryIdSchema>;
 
-export const StoryLineSchema = z.array(WordSchema);
-
-export const StorySchema = z.object({
-  id: StoryIdSchema,
+export const StoryResponseSchema = z.object({
   title: z.string(),
   content: z.string(),
+})
+export type StoryResponse = z.infer<typeof StoryResponseSchema>;
+
+export const StorySchema = StoryResponseSchema.extend({
+  id: StoryIdSchema,
 })
 export type Story = z.infer<typeof StorySchema>;
 
