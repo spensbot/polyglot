@@ -1,16 +1,19 @@
-import { StoryId } from "@/story/Story";
-import { Word } from "@/wordData/Word";
+import { StoryIdSchema } from "@/story/Story";
+import { WordSchema } from "@/wordData/Word";
+import z from "zod";
 
-interface Progress {
-  currentStoryId: StoryId;
-  wordsSeen: Record<Word, WordStats>
-}
+export const WordStatsSchema = z.object({
+  nSeen: z.number().default(0),
+  nHints: z.number().default(0),
+  lastHintStory: StoryIdSchema.optional()
+})
+export type WordStats = z.infer<typeof WordStatsSchema>;
 
-interface WordStats {
-  nSeen: number;
-  nHints: number;
-  lastHintStory?: StoryId;
-}
+export const ProgressSchema = z.object({
+  currentStoryId: StoryIdSchema,
+  wordsSeen: z.record(WordSchema, WordStatsSchema)
+})
+export type Progress = z.infer<typeof ProgressSchema>;
 
 const LevelNames = ["Beginner", "Intermediate", "Advanced"] as const;
 export type LevelName = typeof LevelNames[number];
@@ -31,7 +34,7 @@ export function knownWords(progress: Progress): number {
   return nWordsSeen - nWordsStruggling;
 }
 
-export function getLevel(progress: Progress): Level {
+export function computeLevel(progress: Progress): Level {
   const nKnownWords = knownWords(progress);
   if (nKnownWords < 100) {
     return {

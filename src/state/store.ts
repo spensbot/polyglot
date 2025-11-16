@@ -1,26 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit'
-import appReducer from './appSlice'
+import appReducer, { AppStateSchema, initialState } from './appSlice'
 import { SaveManager } from '@/util/SaveManager'
-import z from 'zod'
-
-const AppStateSchema = z.object({
-  count: z.number().default(0)
-})
-export type AppState = z.infer<typeof AppStateSchema>
-
-const initialState = z.parse(AppStateSchema, {})
 
 const saveManager = new SaveManager({
   debounce_s: 3,
   maxWait_s: 20
 }, {
-  PersistedAppState: AppStateSchema
+  PersistedAppState2: AppStateSchema
 })
 
-const loadedStateResult = saveManager.load('PersistedAppState')
+const loadedStateResult = saveManager.load('PersistedAppState2')
 const loadedState = loadedStateResult.isOk() ? loadedStateResult.value : null
 if (loadedStateResult.isErr()) {
-  console.error('Failed to load persisted state:', loadedStateResult.error.message)
+  console.warn('Failed to load persisted state:', loadedStateResult.error.message)
 }
 
 export const store = configureStore({
@@ -28,12 +20,9 @@ export const store = configureStore({
     app: appReducer
   },
   preloadedState: {
-    app: loadedState ? { ...initialState, ...loadedState } : initialState
+    app: initialState,
+    // app: loadedState ? { ...initialState, ...loadedState } : initialState
   },
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
-      serializableCheck: false
-    })
 })
 
 store.subscribe(() => {
@@ -42,7 +31,7 @@ store.subscribe(() => {
     activeSession: undefined // Don't persist the active session
   }
 
-  saveManager.stateUpdated('PersistedAppState', persistedState)
+  saveManager.stateUpdated('PersistedAppState2', persistedState)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

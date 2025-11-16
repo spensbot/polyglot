@@ -12,8 +12,11 @@
     "start": "pnpm dev"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.67",
+    "@radix-ui/react-slot": "^1.2.4",
     "@reduxjs/toolkit": "^2.10.1",
     "@tailwindcss/vite": "^4.1.17",
+    "ai": "^5.0.93",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
@@ -21,11 +24,14 @@
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.553.0",
     "neverthrow": "^8.2.0",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-redux": "^9.2.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
