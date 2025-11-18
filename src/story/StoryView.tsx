@@ -18,7 +18,7 @@ export function StoryView({ className, id }: Props) {
   const { parsedTitle, parsedContent } = parseStory(story)
 
   return (
-    <div className={cn(className)}>
+    <div className={cn(className, "select-none")}>
       <StoryLine line={parsedTitle} className={"mb-8 text-3xl"} />
       {parsedContent.map((line, index) => (
         <StoryLine key={index} line={line} />

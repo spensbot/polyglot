@@ -1,0 +1,60 @@
+import { useAsync } from "@/util/hooks/useAsync"
+import { ParsedWord } from "./ParsedStory"
+import { useDispatch } from "react-redux"
+import { dict } from "@/dictionary/Dictionary"
+import { useAppState } from "@/state/hooks"
+import { cn } from "@/lib/utils"
+import { prettyPinyin } from "@/dictionary/chinese/prettyPinyin"
+import { Button } from "@/components/ui/button"
+import { clearHint, hint } from "@/state/appSlice"
+
+export function HintView({ word }: { word: ParsedWord }) {
+  const entry = useAsync(() => dict.definitionLookup(word.word), [word])
+
+  const hintLevel = useAppState((state) =>
+    state.hint?.word?.parsedId === word.parsedId ? state.hint.level : 0
+  )
+
+  const dispatch = useDispatch()
+
+  // const frequency = Hanzi.getFrequency(word)
+  // if (!frequency) return null
+  // const { ranking, definition } = frequency
+
+  const chars = word.word.split("")
+
+  return (
+    <div
+      className={cn(
+        "rounded shadow-lg bg-blue-400 text-black p-2 max-w-90 text-sm relative"
+      )}
+    >
+      {entry.status === "success" && entry.data && (
+        <p>{entry.data.pinyin.map(prettyPinyin).join(", ")} </p>
+      )}
+      {hintLevel > 1 && (
+        <>
+          {entry.status === "success" && entry.data && (
+            <p>{entry.data.definitions.join(", ")} </p>
+          )}
+        </>
+      )}
+      {hintLevel > 2 && (
+        <div className="">
+          {chars.map((char) => (
+            <p key={char}> {`${char} ${char}`} </p>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function XButton() {
+  const dispatch = useDispatch()
+  return (
+    <button className="w-5 h-5" onClick={() => dispatch(clearHint())}>
+      X
+    </button>
+  )
+}

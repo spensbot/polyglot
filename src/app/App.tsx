@@ -1,15 +1,23 @@
 import { ProgressView } from "../progress/ProgressView"
-import { useAppState } from "../state/hooks"
+import { useAppState, useDispatch } from "../state/hooks"
 import { StoryView } from "../story/StoryView"
 import cn from "classnames"
 import { TitleView } from "./TitleView"
+import { clearHint } from "@/state/appSlice"
+import { wrapClick } from "@/util/wrapClick"
 
 function App() {
   const progress = useAppState((state) => state.progress)
+  const dispatch = useDispatch()
 
   return (
     <div
       className={cn("w-screen h-screen bg-neutral-950", "flex items-stretch")}
+      onClick={wrapClick((e) => {
+        if (!e.defaultPrevented) {
+          dispatch(clearHint())
+        }
+      })}
     >
       <div className="flex-2 min-w-0">
         <TitleView className="p-4" />
