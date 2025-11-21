@@ -1,8 +1,11 @@
 import z from "zod";
 import { ParsedWordSchema } from "./ParsedStory";
 
-export const StoryIdSchema = z.number().brand("StoryId");
+export const StoryIdSchema = z.uuid().brand("StoryId");
 export type StoryId = z.infer<typeof StoryIdSchema>;
+export function generateStoryId(): StoryId {
+  return crypto.randomUUID() as StoryId;
+}
 
 export const StoryResponseSchema = z.object({
   title: z.string(),

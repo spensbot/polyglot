@@ -23,9 +23,9 @@ function App() {
         dispatch(clearHint())
       })}
     >
-      <div className="flex-2 min-w-0">
+      <div className="flex-2 min-w-0 w-full flex flex-col">
         <TitleView className="p-4" />
-        <StoryView className="p-4" id={progress.currentStoryId} />
+        <StoryView className="p-4 flex-1 min-h-0 overflow-scroll" />
       </div>
       <ProgressView
         className="flex-1 min-w-0 p-4 bg-neutral-900"

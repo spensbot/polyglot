@@ -1,28 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { computeLevel } from "@/progress/Level"
-import { knownWords } from "@/progress/Progress"
-import { nextStory, setGrade, setSummary } from "@/state/appSlice"
+import { setSummary } from "@/state/appSlice"
 import { useAppState } from "@/state/hooks"
-import { stories } from "@/story/stories"
 import { useDispatch } from "react-redux"
-import { gradeSummary } from "./gradeSummary"
+import { gradeSummaryThunk } from "./gradeSummaryThunk"
+import { createStoryThunk } from "@/story/createStoryThunk"
 
 export function SummaryView() {
   const dispatch = useDispatch()
-  const progress = useAppState((state) => state.progress)
-  const storyId = useAppState((state) => state.progress.currentStoryId)
-  const story = stories[storyId]
-  const summary = useAppState((state) => state.summary)
-
-  async function gradeSummaryFlow() {
-    dispatch(setGrade({ status: "loading" }))
-    const grade = await gradeSummary({
-      story,
-      summary,
-    })
-    dispatch(setGrade({ status: "success", data: grade }))
-  }
+  const { storyId, summary } = useAppState((s) => s.currentStory)
+  const story = useAppState((s) => s.storiesById[storyId])
+  const progress = useAppState((s) => s.progress)
 
   return (
     <div>
@@ -32,7 +20,13 @@ export function SummaryView() {
         onChange={(e) => dispatch(setSummary(e.target.value))}
       />
       <div className="h-2" />
-      <Button size="lg" onClick={() => gradeSummaryFlow()}>
+      <Button
+        size="lg"
+        onClick={() => {
+          createStoryThunk(dispatch, progress)
+          // gradeSummaryThunk(dispatch, story, summary)
+        }}
+      >
         Grade
       </Button>
     </div>

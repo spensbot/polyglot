@@ -1,6 +1,5 @@
 import { Word } from "@/dictionary/Word";
-import { knownWords, learningWords, Progress, familiarWords, seenWords, isKnown, isLearning } from "./Progress";
-import { computeLevel } from "./Level";
+import { Progress, seenWords, isKnown, isLearning } from "./Progress";
 
 /** Can be used to multiply llm logics by a bias factor for specific words.
  * 

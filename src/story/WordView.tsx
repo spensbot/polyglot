@@ -37,8 +37,13 @@ export function WordView({ word }: { word: ParsedWord }) {
       </Popover.Anchor>
 
       <Popover.Portal>
-        <Popover.Content sideOffset={5} collisionPadding={20}>
+        <Popover.Content
+          sideOffset={5}
+          collisionPadding={20}
+          className="focus:outline-none"
+        >
           <HintView word={word} />
+          <Popover.Arrow className="fill-blue-400" width={15} height={8} />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

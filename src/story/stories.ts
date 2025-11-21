@@ -13,7 +13,7 @@ export function nextStoryId(current: StoryId): StoryId {
  */
 export const stories: Story[] = [
   {
-    id: 0 as StoryId,
+    id: "story-1" as StoryId,
     title: "小明的猫",
     content: `我叫小明。
 我有一只猫。
@@ -39,7 +39,7 @@ export const stories: Story[] = [
 我和我的猫都很高兴。`
   },
   {
-    id: 1 as StoryId,
+    id: "story-2" as StoryId,
     title: "小华的朋友",
     content: `
 
@@ -61,7 +61,7 @@ export const stories: Story[] = [
 我和我的朋友都很高兴。`
   },
   {
-    id: 2 as StoryId,
+    id: "story-3" as StoryId,
     title: "小红吃饭",
     content: `
 
@@ -85,7 +85,7 @@ export const stories: Story[] = [
 我和爸爸妈妈都很高兴。`
   },
   {
-    id: 3 as StoryId,
+    id: "story-4" as StoryId,
     title: "今天的天气",
     content: `
 
@@ -106,15 +106,7 @@ export const stories: Story[] = [
 
 今天很高兴。
 小狗也很高兴。`
-  },
-  // {
-  //   id: 5 as StoryId,
-  //   title: "",
-  //   content: ``
-  // },
-  // {
-  //   id: 6 as StoryId,
-  //   title: "",
-  //   content: ``
-  // }
+  }
 ]
+
+export const STORY_0 = stories[0]

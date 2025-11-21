@@ -1,5 +1,3 @@
-import { StoryIdSchema } from "@/story/Story";
-import { unlerp } from "@/util/math";
 import { WordSchema } from "@/dictionary/Word";
 import z from "zod";
 
@@ -10,13 +8,16 @@ export const WordStatsSchema = z.object({
   word: WordSchema,
   nSeen: z.number().default(0),
   nHints: z.number().default(0),
-  nSeenSinceLastHint: z.number().default(0)
+  nSeenSinceLastHint: z.number().optional()
 })
 export type WordStats = z.infer<typeof WordStatsSchema>;
 
 export function updateSeen(word: WordStats) {
   word.nSeen += 1;
-  word.nSeenSinceLastHint += 1
+  const didRequestHint = word.nSeenSinceLastHint === 0
+  if (!didRequestHint && word.nSeenSinceLastHint !== undefined) {
+    word.nSeenSinceLastHint += 1
+  }
 }
 
 export function updateHint(word: WordStats) {
@@ -25,15 +26,18 @@ export function updateHint(word: WordStats) {
 }
 
 export function isKnown(word: WordStats): boolean {
+  if (word.nSeenSinceLastHint === undefined) {
+    return word.nSeen >= KNOWN_THRESHOLD
+  }
   return word.nSeenSinceLastHint >= KNOWN_THRESHOLD
 }
 
 export function isLearning(word: WordStats): boolean {
+  if (word.nSeenSinceLastHint === undefined) return false;
   return word.nSeenSinceLastHint < KNOWN_THRESHOLD
 }
 
 export const ProgressSchema = z.object({
-  currentStoryId: StoryIdSchema,
   wordsSeen: z.record(WordSchema, WordStatsSchema)
 })
 export type Progress = z.infer<typeof ProgressSchema>;

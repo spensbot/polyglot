@@ -12,6 +12,8 @@ export function ProgressView({ className, progress }: Props) {
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
 
+  console.log(`learning: ${JSON.stringify(learningWords(progress), null, 2)}`)
+
   return (
     <div className={cn("flex flex-col", className)}>
       <p className="text-3xl">{level.level}</p>

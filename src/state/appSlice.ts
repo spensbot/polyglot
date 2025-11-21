@@ -1,47 +1,59 @@
 import { Progress, ProgressSchema, updateHint, updateSeen, WordStats } from '@/progress/Progress'
-import { stories, nextStoryId } from '@/story/stories'
-import { HintSchema } from '@/story/Story'
+import { STORY_0 } from '@/story/stories'
+import { HintSchema, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
-import { Word, WordSchema } from '@/dictionary/Word'
+import { Word } from '@/dictionary/Word'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import z, { set } from 'zod'
+import z from 'zod'
 import { ParsedWord } from '@/story/ParsedStory'
-import { Grade, GradeSchema } from '@/grade/Grade'
-import { AsyncState, AsyncStateSchema } from '@/util/AsyncState'
+import { Grade } from '@/grade/Grade'
+import { Async, AsyncState, AsyncStateSchema } from '@/util/AsyncState'
+import { StoryEvalSchema } from '@/story/StoryEval'
 
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
-  summary: z.string(),
-  grade: AsyncStateSchema(GradeSchema).optional()
+  currentStory: StoryEvalSchema,
+  storiesById: z.record(StoryIdSchema, AsyncStateSchema(StorySchema))
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
 
 export const initialState: AppState = {
   progress: {
-    currentStoryId: stories[0].id,
     wordsSeen: {}
   },
-  summary: '',
+  currentStory: {
+    storyId: STORY_0.id,
+    summary: '',
+  },
+  storiesById: {
+    [STORY_0.id]: Async.success(STORY_0)
+  }
 }
 
 export const appSlice = createSlice({
   name: 'note',
   initialState,
   reducers: {
-    nextStory: (state) => {
-      delete state.grade
-      state.summary = ''
-      const story = stories.find((story) => story.id === state.progress.currentStoryId)!;
+    nextStory: (state, action: PayloadAction<{ id: StoryId }>) => {
+      const lastStory = state.storiesById[state.currentStory.storyId]
+      if (lastStory.status === 'success') {
+        updateProgressForCompletedStory(state.progress, lastStory.val)
+      }
 
-      parseStory(story).parsedAll.forEach(word => {
-        const stats = getOrCreateWordStats(state.progress.wordsSeen, word.word)
-        updateSeen(stats)
-      })
-
-      state.progress.currentStoryId = nextStoryId(state.progress.currentStoryId)
+      delete state.hint
+      const { id } = action.payload
+      state.storiesById[id] = Async.idle()
+      state.currentStory = {
+        storyId: id,
+        summary: ''
+      }
+    },
+    setStory: (state, action: PayloadAction<{ id: StoryId, story: AsyncState<Story> }>) => {
+      const { id, story } = action.payload
+      state.storiesById[id] = story
     },
     hint: (state, action: PayloadAction<{ word: ParsedWord, level: number }>) => {
       const hint = action.payload
@@ -51,16 +63,16 @@ export const appSlice = createSlice({
       updateHint(stats)
     },
     clearHint: (state) => {
-      state.hint = undefined
+      delete state.hint
     },
     setGrade: (state, action: PayloadAction<AsyncState<Grade>>) => {
-      state.grade = action.payload
+      state.currentStory.grade = action.payload
     },
     retryStory: (state) => {
-      delete state.grade
+      delete state.currentStory.grade
     },
     setSummary: (state, action: PayloadAction<string>) => {
-      state.summary = action.payload
+      state.currentStory.summary = action.payload
     }
   },
 })
@@ -71,15 +83,23 @@ function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): W
       word,
       nSeen: 0,
       nHints: 0,
-      nSeenSinceLastHint: 0
     }
   }
   return wordsSeen[word]
 }
 
+function updateProgressForCompletedStory(progress: Progress, story: Story) {
+  parseStory(story).parsedAll.forEach(word => {
+    const stats = getOrCreateWordStats(progress.wordsSeen, word.word)
+    updateSeen(stats)
+  })
+}
+
+
 // Action creators are generated for each case reducer function
 export const {
   nextStory,
+  setStory,
   hint,
   clearHint,
   setGrade,

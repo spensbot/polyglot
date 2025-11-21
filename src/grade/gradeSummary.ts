@@ -4,13 +4,14 @@ import { Story } from '@/story/Story'
 import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
 import { generateObj } from '@/util/llm/generate'
 import { Log } from '@/util/Log'
+import { Result } from '@/util/Result'
 
 export interface Props {
   story: Story
   summary: string
 }
 
-export async function gradeSummary({ story, summary }: Props): Promise<Grade> {
+export async function gradeSummary({ story, summary }: Props): Promise<Result<Grade>> {
   const prompt = gradeSummaryPrompt({ story, summary })
   Log.temp(`Grade Summary Prompt: ${prompt}`)
   const response = await generateObj<Grade>(prompt, GradeSchema)
@@ -37,7 +38,7 @@ You operate within the Polyglot app.
 
 ${infoSection('App README', APP_SUMMARY_FOR_LLM)}
   
-${infoSection('Required Response Format', serializeSchema(GradeSchema, 'Grade'))}
+${infoSection('Your response MUST be valid json that matches this schema', serializeSchema(GradeSchema, 'Grade'))}
 
 ${infoSection('The Story That The User is Asked To Read And Understand', serializeForLlm(story))}
 

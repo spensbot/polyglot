@@ -1,6 +1,6 @@
 import * as z from 'zod'
-import { Result, ok, err } from 'neverthrow'
 import debounce from 'lodash.debounce'
+import { Err, Ok, Result } from './Result'
 
 interface Config {
   debounce_s: number
@@ -47,7 +47,7 @@ export class SaveManager<Schemas extends SchemaMap> {
     try {
       const raw = this.loadFn(String(key))
       if (raw === null) {
-        return err(new Error(`Key "${String(key)}" not found`))
+        return Err(new Error(`Key "${String(key)}" not found`))
       }
 
       const parsed = JSON.parse(raw)
@@ -55,13 +55,13 @@ export class SaveManager<Schemas extends SchemaMap> {
       const result = schema.safeParse(parsed)
 
       if (!result.success) {
-        return err(new Error(`Validation failed for key "${String(key)}": ${result.error.message}`))
+        return Err(new Error(`Validation failed for key "${String(key)}": ${result.error.message}`))
       }
 
-      return ok(result.data)
+      return Ok(result.data)
     } catch (e) {
       console.error('Error loading state:', e)
-      return err(e instanceof Error ? e : new Error(String(e)))
+      return Err(e instanceof Error ? e : new Error(String(e)))
     }
   }
 

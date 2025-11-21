@@ -10,9 +10,9 @@ const saveManager = new SaveManager({
 })
 
 const loadedStateResult = saveManager.load('PersistedAppState2')
-const loadedState = loadedStateResult.isOk() ? loadedStateResult.value : null
-if (loadedStateResult.isErr()) {
-  console.warn('Failed to load persisted state:', loadedStateResult.error.message)
+const loadedState = loadedStateResult.ok ? loadedStateResult.val : null
+if (!loadedStateResult.ok) {
+  console.warn('Failed to load persisted state:', loadedStateResult.err.message)
 }
 
 export const store = configureStore({

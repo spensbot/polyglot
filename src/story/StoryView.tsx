@@ -1,24 +1,31 @@
-import { stories } from "./stories"
-import { StoryId } from "./Story"
 import { WordView } from "./WordView"
 import { parseStory } from "./parseStory"
 import { cn } from "@/lib/utils"
 import { ParsedWord } from "./ParsedStory"
+import { useAppState } from "@/state/hooks"
 
 interface Props {
   className?: string
-  id: StoryId
 }
 
-export function StoryView({ className, id }: Props) {
-  const story = stories.find((s) => s.id === id)
+export function StoryView({ className }: Props) {
+  const storyId = useAppState((state) => state.currentStory.storyId)
+  const story = useAppState((state) => state.storiesById[storyId])
 
   if (!story) return null
 
-  const { parsedTitle, parsedContent } = parseStory(story)
+  if (story.status === "loading" || story.status === "idle") {
+    return <div className={cn(className, "italic")}>Loading story...</div>
+  }
+
+  if (story.status === "error") {
+    return <div className={cn(className)}>Error Loading Story: {story.err}</div>
+  }
+
+  const { parsedTitle, parsedContent } = parseStory(story.val)
 
   return (
-    <div className={cn(className, "select-none")}>
+    <div className={cn(className, "select-none flex flex-col gap-1")}>
       <StoryLine line={parsedTitle} className={"mb-8 text-3xl"} />
       {parsedContent.map((line, index) => (
         <StoryLine key={index} line={line} />
@@ -35,7 +42,7 @@ function StoryLine({
   className?: string
 }) {
   return (
-    <div className={cn("h-8 text-xl", className)}>
+    <div className={cn("text-xl flex flex-wrap", className)}>
       {line.map((word) => (
         <WordView key={word.parsedId} word={word} />
       ))}

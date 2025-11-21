@@ -28,13 +28,13 @@ export function HintView({ word }: { word: ParsedWord }) {
         "rounded shadow-lg bg-blue-400 text-black p-2 max-w-90 relative"
       )}
     >
-      {entry.status === "success" && entry.data && (
-        <p>{entry.data.pinyin.map(prettyPinyin).join(" ")} </p>
+      {entry.status === "success" && entry.val && (
+        <p>{entry.val.pinyin.map(prettyPinyin).join(" ")} </p>
       )}
       {hintLevel > 1 && (
         <>
-          {entry.status === "success" && entry.data && (
-            <p className="text-sm">{entry.data.definitions.join(", ")} </p>
+          {entry.status === "success" && entry.val && (
+            <p className="text-sm">{entry.val.definitions.join(", ")} </p>
           )}
         </>
       )}
@@ -58,7 +58,7 @@ function CharView({ char }: { char: string }) {
     <p className="opacity-50">
       <span>{char}</span>
       {entry.status === "success" && (
-        <span>{entry.data?.definitions.join(", ")} </span>
+        <span>{entry.val?.definitions.join(", ")} </span>
       )}
     </p>
   )

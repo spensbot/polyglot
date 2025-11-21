@@ -2,8 +2,11 @@ import { infoSection, serializeForLlm, serializeSchema } from '@/util/llm/prompt
 import { StoryResponse, StoryResponseSchema } from './Story'
 import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
 import { generateObj } from '@/util/llm/generate'
-import { Progress } from '@/progress/Progress'
+import { knownWords, Progress } from '@/progress/Progress'
 import { llmBiasByProgress } from '@/progress/LlmBias'
+import { Result } from '@/util/Result'
+import { Log } from '@/util/Log'
+import { computeLevel, Level } from '@/progress/Level'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
@@ -11,13 +14,17 @@ interface Props {
   progress: Progress
 }
 
-export function createStory(props: Props): Promise<StoryResponse> {
+export async function createStory(props: Props): Promise<Result<StoryResponse>> {
   const prompt = createStoryPrompt(props)
-  return generateObj<StoryResponse>(prompt, StoryResponseSchema)
+  Log.temp(`Create Story Prompt: ${prompt}`)
+  const response = await generateObj<StoryResponse>(prompt, StoryResponseSchema)
+  Log.temp(`Create Story Response: ${JSON.stringify(response, null, 2)}`)
+  return response
 }
 
 function createStoryPrompt(props: Props): string {
   const llmBias = llmBiasByProgress(props.progress)
+  const level = computeLevel(knownWords(props.progress).length)
 
   return `
 You are an expert language learning tutor. Your task is to create a story in a foreign language that is tailor-made for the user's proficiency in that language.
@@ -25,15 +32,28 @@ You are an expert language learning tutor. Your task is to create a story in a f
 Your Tone: 
 - Friendly, helpful, and informative.
 
-IMPORTANT: The story should be entirely in ${TARGET_LANGUAGE}.
+Important Requirements:
+- The story MUST be entirely in ${TARGET_LANGUAGE}.
+- The story MUST be engaging and appropriate for the user's proficiency level.
+- The story MUST incorporate the favored words provided, giving preference to higher-weighted words.
 
 You operate within the Polyglot app.
 
 ${infoSection('App README', APP_SUMMARY_FOR_LLM)}
-  
-${infoSection('Required Response Format', serializeSchema(StoryResponseSchema, 'StoryResponse'))}
 
 ${infoSection('Favored Words With Weight. Prefer to include these words in the story', serializeForLlm(llmBias))}
+
+${infoSection('User Language Proficiency Level. Create the story to match this level.', `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
+  
+${infoSection('Your response MUST be valid json that matches this schema:', serializeSchema(StoryResponseSchema, 'StoryResponse'))}
 `
 }
 
+
+const LEVEL_EXPLANATIONS: Record<Level, string> = {
+  'Beginner': 'The user has a very basic level of proficiency. They are just starting to learn the language and have a limited vocabulary. Only include very simple, common words. The story must be very short, no more than 100 words.',
+  'Emerging': 'The user is able to understand and use some basic phrases and sentences. Vocabulary is still limited, but they can handle simple stories with familiar topics and slightly longer sentences. Use mostly common words and simple grammar. The story must be short, no more than 100-200 words.',
+  'Intermediate': 'The user can understand and communicate using a wider range of vocabulary and more complex sentences. The story can include some less common words and more varied sentence structures, but should still avoid advanced idioms or highly technical language. The story should be around 200-300 words.',
+  'Advanced': 'The user has a strong grasp of the language, including complex grammar and a broad vocabulary. The story can include advanced sentence structures, idiomatic expressions, and nuanced language. Topics can be more sophisticated and abstract. The story should be 300 - 500 words',
+  'Expert': 'The user is highly proficient and can understand and produce language at a near-native level. The story can include highly complex language, idioms, cultural references, and advanced vocabulary. Feel free to use literary devices and explore challenging topics. The story should be about 500 words.'
+}

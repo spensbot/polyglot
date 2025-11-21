@@ -1,8 +1,7 @@
 import z from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 
 export function serializeSchema(schema: z.ZodType, name: string): string {
-  const jsonSchema = zodToJsonSchema(schema, name);
+  const jsonSchema = z.toJSONSchema(schema);
   return serializeForLlm(jsonSchema);
 }
 
