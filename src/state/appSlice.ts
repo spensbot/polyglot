@@ -1,8 +1,7 @@
-import { Progress, ProgressSchema, updateHint, updateSeen, WordStats } from '@/progress/Progress'
+import { getOrCreateWordStats, ProgressSchema, updateHint, updateProgressForCompletedStory } from '@/progress/Progress'
 import { STORY_0 } from '@/story/stories'
 import { HintSchema, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
-import { Word } from '@/dictionary/Word'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import z from 'zod'
@@ -40,7 +39,8 @@ export const appSlice = createSlice({
     nextStory: (state, action: PayloadAction<{ id: StoryId }>) => {
       const lastStory = state.storiesById[state.currentStory.storyId]
       if (lastStory.status === 'success') {
-        updateProgressForCompletedStory(state.progress, lastStory.val)
+        const allWords = parseStory(lastStory.val).parsedAll.map(pw => pw.word)
+        updateProgressForCompletedStory(state.progress, allWords)
       }
 
       delete state.hint
@@ -76,25 +76,6 @@ export const appSlice = createSlice({
     }
   },
 })
-
-function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): WordStats {
-  if (!wordsSeen[word]) {
-    wordsSeen[word] = {
-      word,
-      nSeen: 0,
-      nHints: 0,
-    }
-  }
-  return wordsSeen[word]
-}
-
-function updateProgressForCompletedStory(progress: Progress, story: Story) {
-  parseStory(story).parsedAll.forEach(word => {
-    const stats = getOrCreateWordStats(progress.wordsSeen, word.word)
-    updateSeen(stats)
-  })
-}
-
 
 // Action creators are generated for each case reducer function
 export const {

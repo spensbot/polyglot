@@ -1,4 +1,4 @@
-import { WordSchema } from "@/dictionary/Word";
+import { Word, WordSchema } from "@/dictionary/Word";
 import z from "zod";
 
 /** How many times a user must have seens a word without asking for a hint for it to be considered known */
@@ -6,24 +6,53 @@ export const KNOWN_THRESHOLD = 5;
 
 export const WordStatsSchema = z.object({
   word: WordSchema,
-  nSeen: z.number().default(0),
-  nHints: z.number().default(0),
-  nSeenSinceLastHint: z.number().optional()
+  nSeen: z.number(),
+  nHints: z.number(),
+  nSeenSinceLastHint: z.number().optional(),
+  hintedThisStory: z.boolean().optional(),
 })
 export type WordStats = z.infer<typeof WordStatsSchema>;
-
-export function updateSeen(word: WordStats) {
-  word.nSeen += 1;
-  const didRequestHint = word.nSeenSinceLastHint === 0
-  if (!didRequestHint && word.nSeenSinceLastHint !== undefined) {
-    word.nSeenSinceLastHint += 1
+export function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): WordStats {
+  if (!wordsSeen[word]) {
+    wordsSeen[word] = {
+      word,
+      nSeen: 0,
+      nHints: 0,
+    }
   }
+  return wordsSeen[word]
 }
 
+/** When a hint is given during the story */
 export function updateHint(word: WordStats) {
   word.nHints += 1
   word.nSeenSinceLastHint = 0
+  word.hintedThisStory = true
 }
+
+/** After the story */
+function updateSeen(word: WordStats, count: number) {
+  word.nSeen += count;
+  if (!word.hintedThisStory && word.nSeenSinceLastHint !== undefined) {
+    word.nSeenSinceLastHint += count
+  }
+  delete word.hintedThisStory
+}
+
+export function updateProgressForCompletedStory(progress: Progress, words: Word[]) {
+  const wordCounts = words.reduce<Map<Word, number>>((acc, w) => {
+    acc.set(w, (acc.get(w) || 0) + 1)
+    return acc
+  }, new Map<Word, number>())
+
+  wordCounts.forEach((count, w) => {
+    const stats = getOrCreateWordStats(progress.wordsSeen, w)
+    for (let i = 0; i < count; i++) {
+      updateSeen(stats, count)
+    }
+  })
+}
+
 
 export function isKnown(word: WordStats): boolean {
   if (word.nSeenSinceLastHint === undefined) {
