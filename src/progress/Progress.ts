@@ -47,9 +47,7 @@ export function updateProgressForCompletedStory(progress: Progress, words: Word[
 
   wordCounts.forEach((count, w) => {
     const stats = getOrCreateWordStats(progress.wordsSeen, w)
-    for (let i = 0; i < count; i++) {
-      updateSeen(stats, count)
-    }
+    updateSeen(stats, count)
   })
 }
 
