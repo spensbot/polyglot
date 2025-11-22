@@ -6,10 +6,13 @@ import { AppDispatch } from "@/state/store";
 import { nextStory, setStory } from "@/state/appSlice";
 import { Async } from "@/util/AsyncState";
 import { stories } from "./stories";
+import { parseStory } from "./parseStory";
 
 export async function createStoryThunk(dispatch: AppDispatch, progress: Progress) {
   const id = stories[1].id
-  const asyncStory = Async.success({ ...stories[1], id })
+  const story = stories[1]
+  const parsed = await parseStory(story)
+  const asyncStory = Async.success(parsed)
   dispatch(nextStory({ id }))
 
   // const id = generateStoryId()

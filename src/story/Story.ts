@@ -1,5 +1,4 @@
 import z from "zod";
-import { ParsedWordSchema } from "./ParsedStory";
 
 export const StoryIdSchema = z.uuid().brand("StoryId");
 export type StoryId = z.infer<typeof StoryIdSchema>;
@@ -17,6 +16,16 @@ export const StorySchema = StoryResponseSchema.extend({
   id: StoryIdSchema,
 })
 export type Story = z.infer<typeof StorySchema>;
+
+export const ParsedIdSchema = z.number().brand("parsedId");
+export type ParsedId = z.infer<typeof ParsedIdSchema>;
+
+export const ParsedWordSchema = z.object({
+  parsedId: ParsedIdSchema,
+  word: z.string().brand("Word"),
+});
+export type ParsedWord = z.infer<typeof ParsedWordSchema>;
+
 
 export const HintSchema = z.object({
   word: ParsedWordSchema,

@@ -8,7 +8,7 @@ import { prettyPinyin } from "@/dictionary/chinese/prettyPinyin"
 import { Char, Word } from "@/dictionary/Word"
 
 export function HintView({ word }: { word: ParsedWord }) {
-  const entry = useAsync(() => dict.definitionLookup(word.word), [word])
+  const entry = useAsync(() => dict.define(word.word), [word])
 
   const hintLevel = useAppState((state) =>
     state.hint?.word?.parsedId === word.parsedId ? state.hint.level : 0
@@ -53,7 +53,7 @@ export function HintView({ word }: { word: ParsedWord }) {
 }
 
 function CharView({ char }: { char: string }) {
-  const entry = useAsync(() => dict.definitionLookup(char as Word), [char])
+  const entry = useAsync(() => dict.define(char as Word), [char])
   return (
     <p className="opacity-50">
       <span>{char}</span>

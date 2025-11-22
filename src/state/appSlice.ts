@@ -1,11 +1,11 @@
 import { getOrCreateWordStats, ProgressSchema, updateHint, updateProgressForCompletedStory } from '@/progress/Progress'
 import { STORY_0 } from '@/story/stories'
-import { HintSchema, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
+import { HintSchema, ParsedWord, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import z from 'zod'
-import { ParsedWord } from '@/story/ParsedStory'
+import { ParsedStory, ParsedStorySchema } from '@/story/ParsedStory'
 import { Grade } from '@/grade/Grade'
 import { Async, AsyncState, AsyncStateSchema } from '@/util/AsyncState'
 import { StoryEvalSchema } from '@/story/StoryEval'
@@ -14,7 +14,7 @@ export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
   currentStory: StoryEvalSchema,
-  storiesById: z.record(StoryIdSchema, AsyncStateSchema(StorySchema))
+  storiesById: z.record(StoryIdSchema, AsyncStateSchema(ParsedStorySchema))
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -28,7 +28,7 @@ export const initialState: AppState = {
     summary: '',
   },
   storiesById: {
-    [STORY_0.id]: Async.success(STORY_0)
+    [STORY_0.id]: Async.idle()
   }
 }
 
@@ -39,7 +39,7 @@ export const appSlice = createSlice({
     nextStory: (state, action: PayloadAction<{ id: StoryId }>) => {
       const lastStory = state.storiesById[state.currentStory.storyId]
       if (lastStory.status === 'success') {
-        const allWords = parseStory(lastStory.val).parsedAll.map(pw => pw.word)
+        const allWords = lastStory.val.parsedAll.map(pw => pw.word)
         updateProgressForCompletedStory(state.progress, allWords)
       }
 
@@ -51,7 +51,7 @@ export const appSlice = createSlice({
         summary: ''
       }
     },
-    setStory: (state, action: PayloadAction<{ id: StoryId, story: AsyncState<Story> }>) => {
+    setStory: (state, action: PayloadAction<{ id: StoryId, story: AsyncState<ParsedStory> }>) => {
       const { id, story } = action.payload
       state.storiesById[id] = story
     },

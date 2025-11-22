@@ -1,23 +1,38 @@
 import { Word } from "@/dictionary/Word";
-import { Story } from "./Story";
+import { ParsedId, ParsedWord, Story } from "./Story";
 import { dict } from "@/dictionary/Dictionary";
-import { ParsedId, ParsedStory, ParsedWord } from "./ParsedStory";
+import { ParsedStory } from "./ParsedStory";
 
-function parseLine(line: string): Word[] {
-  return dict.segment(line);
+async function parseLine(line: string): Promise<Word[]> {
+  const segments = dict.segment(line);
+
+  const results: Word[] = [];
+
+  for (const seg of segments) {
+    const definition = await dict.define(seg);
+    if (definition) {
+      results.push(seg);
+    } else {
+      for (const char of Array.from(seg)) {
+        results.push(char as Word);
+      }
+    }
+  }
+
+  return results;
 }
 
-function parseContent(content: string): Word[][] {
+async function parseContent(content: string): Promise<Word[][]> {
   const rawLines = content
     .split("\n")
     .filter((line) => line.trim().length > 0);
-  return rawLines.map(line => parseLine(line));
+  return Promise.all(rawLines.map(line => parseLine(line)));
 }
 
-export function parseStory(story: Story): ParsedStory {
+export async function parseStory(story: Story): Promise<ParsedStory> {
   let iWord = 0;
 
-  const parsedTitle: ParsedWord[] = parseLine(story.title).map((word) => {
+  const parsedTitle: ParsedWord[] = (await parseLine(story.title)).map((word) => {
     iWord += 1;
     return {
       parsedId: iWord as ParsedId,
@@ -25,7 +40,7 @@ export function parseStory(story: Story): ParsedStory {
     };
   });
 
-  const parsedContent: ParsedWord[][] = parseContent(story.content).map((line =>
+  const parsedContent: ParsedWord[][] = (await parseContent(story.content)).map((line =>
     line.map((word) => {
       iWord += 1;
       return {
@@ -34,6 +49,8 @@ export function parseStory(story: Story): ParsedStory {
       };
     })
   ));
+
+  console.log(parsedContent)
 
   return {
     story,

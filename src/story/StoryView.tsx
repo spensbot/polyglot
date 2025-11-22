@@ -1,7 +1,7 @@
+import { ParsedWord } from "./Story"
 import { WordView } from "./WordView"
 import { parseStory } from "./parseStory"
 import { cn } from "@/lib/utils"
-import { ParsedWord } from "./ParsedStory"
 import { useAppState } from "@/state/hooks"
 
 interface Props {
@@ -22,7 +22,7 @@ export function StoryView({ className }: Props) {
     return <div className={cn(className)}>Error Loading Story: {story.err}</div>
   }
 
-  const { parsedTitle, parsedContent } = parseStory(story.val)
+  const { parsedTitle, parsedContent } = story.val
 
   return (
     <div className={cn(className, "select-none flex flex-col gap-1")}>
@@ -42,7 +42,7 @@ function StoryLine({
   className?: string
 }) {
   return (
-    <div className={cn("text-xl flex flex-wrap", className)}>
+    <div className={cn("text-xl flex flex-wrap mb-4", className)}>
       {line.map((word) => (
         <WordView key={word.parsedId} word={word} />
       ))}

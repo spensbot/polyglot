@@ -11,7 +11,7 @@ export class Dictionary {
     return new Dictionary(cedictDb);
   }
 
-  async definitionLookup(word: Word): Promise<CedictEntry | undefined> {
+  async define(word: Word): Promise<CedictEntry | undefined> {
     return this.cedictDb.get(word);
   }
 
@@ -22,7 +22,7 @@ export class Dictionary {
     return Array.from(segments).map(segment => segment.segment as Word);
   }
 
-  getFrequency(char: string): JundaEntry | undefined {
+  frequency(char: string): JundaEntry | undefined {
     return this.junda.get(char);
   }
 }
