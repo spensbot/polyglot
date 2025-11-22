@@ -1,4 +1,4 @@
-import { infoSection, serializeForLlm, serializeSchema } from '@/util/llm/promptUtil'
+import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
 import { Grade, GradeSchema } from './Grade'
 import { Story } from '@/story/Story'
 import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
@@ -37,8 +37,6 @@ Note:
 You operate within the Polyglot app.
 
 ${infoSection('App README', APP_SUMMARY_FOR_LLM)}
-  
-${infoSection('Your response MUST be valid json that matches this schema', serializeSchema(GradeSchema, 'Grade'))}
 
 ${infoSection('The Story That The User is Asked To Read And Understand', serializeForLlm(story))}
 

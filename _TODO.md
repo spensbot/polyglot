@@ -1,13 +1,19 @@
 # Todos
+- Custom bias printing to maximize llm clarity
+- Object Streaming
+- Iterate on LLM grading
+- Iterate on LLM story generation
+- Make sure the app can continue in all failure scenarios (llm failure mostly)
+- Change Letter Grade to Stars (A,B,C)/(3,2,1) stars
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Bucketed by commonality (extreemely common, very common, common, uncommon, rare, very rare, extreemely rare)
   - Describe how known/learning is calculated
 - Add all Junda Chars
-- Research how to maximize chance of correct agent response formatting
 - Integrate character rarity (by color?)
 
 ## Future
 - Phone Layout
+- History View
 - Service Worker
 - Prune definitions from dictionary with uncommon characters?
 - Local LLM with custom logit bias and API

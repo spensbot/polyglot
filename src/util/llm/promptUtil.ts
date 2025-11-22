@@ -1,10 +1,3 @@
-import z from "zod";
-
-export function serializeSchema(schema: z.ZodType, name: string): string {
-  const jsonSchema = z.toJSONSchema(schema);
-  return serializeForLlm(jsonSchema);
-}
-
 export function infoSection(title: string, info: string): string {
   return `
 ${title}:

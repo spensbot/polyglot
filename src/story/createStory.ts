@@ -1,4 +1,4 @@
-import { infoSection, serializeForLlm, serializeSchema } from '@/util/llm/promptUtil'
+import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
 import { StoryResponse, StoryResponseSchema } from './Story'
 import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
 import { generateObj } from '@/util/llm/generate'
@@ -44,8 +44,6 @@ ${infoSection('App README', APP_SUMMARY_FOR_LLM)}
 ${infoSection('Favored Words With Weight. Prefer to include these words in the story', serializeForLlm(llmBias))}
 
 ${infoSection('User Language Proficiency Level. Create the story to match this level.', `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
-  
-${infoSection('Your response MUST be valid json that matches this schema:', serializeSchema(StoryResponseSchema, 'StoryResponse'))}
 `
 }
 

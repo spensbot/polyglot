@@ -20,3 +20,18 @@ export type Grade = z.infer<typeof GradeSchema>
 export function isPassingGrade(grade: Grade): boolean {
   return ["A", "B", "C"].includes(grade.letter)
 }
+
+export type StarCount = 0 | 1 | 2 | 3
+
+export function gradeToStarCount(grade: Grade): StarCount {
+  switch (grade.letter) {
+    case "A":
+      return 3
+    case "B":
+      return 2
+    case "C":
+      return 1
+    default:
+      return 0
+  }
+}

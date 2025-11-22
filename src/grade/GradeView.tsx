@@ -1,9 +1,15 @@
 import { cn } from "@/lib/utils"
 import { Spinner } from "@/components/ui/spinner"
 import { useAppDispatch, useAppState } from "@/state/hooks"
-import { Grade, GradeLetter, isPassingGrade } from "./Grade"
+import {
+  Grade,
+  GradeLetter,
+  gradeToStarCount,
+  isPassingGrade,
+  StarCount,
+} from "./Grade"
 import { Button } from "@/components/ui/button"
-import { CircleArrowRight, RotateCcw } from "lucide-react"
+import { CircleArrowRight, RotateCcw, Star } from "lucide-react"
 import { retryStory } from "@/state/appSlice"
 import { createStoryThunk } from "@/story/createStoryThunk"
 import { Log } from "@/util/Log"
@@ -43,13 +49,15 @@ function GradeLoadingView() {
 function GradeSuccessView({ grade }: { grade: Grade }) {
   const isPass = isPassingGrade(grade)
   const color = gradeToColor(grade)
+  const stars = gradeToStarCount(grade)
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-end gap-2">
-        <p className="text-4xl" style={{ color }}>
+      <div className="flex flex-col items-center gap-2">
+        {/* <p className="text-4xl" style={{ color }}>
           {grade.letter} -
-        </p>
+        </p> */}
+        <StarsView stars={stars} />
         <p className="text-4xl" style={{ color }}>
           {isPass ? "Pass" : "Fail"}
         </p>
@@ -103,4 +111,18 @@ function ContinueButton() {
       Continue
     </Button>
   )
+}
+
+function StarsView({ stars }: { stars: StarCount }) {
+  return (
+    <div className="flex items-center gap-4">
+      {Array.from({ length: 3 }, (_, i) => (
+        <StarView key={i} filled={i < stars} />
+      ))}
+    </div>
+  )
+}
+
+function StarView({ filled }: { filled: boolean }) {
+  return <Star size="5rem" className={cn(filled && "fill-white")} />
 }
