@@ -3,7 +3,7 @@ import { loadJunda, type JundaEntry } from "./chinese/junda";
 import { Word } from "./Word";
 
 export class Dictionary {
-  private junda = loadJunda();
+  readonly junda: Map<string, JundaEntry> = loadJunda();
   private constructor(private cedictDb: CedictDb) { }
 
   static async create(): Promise<Dictionary> {

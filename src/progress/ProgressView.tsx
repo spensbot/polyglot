@@ -38,9 +38,6 @@ export function ProgressView({ className, progress }: Props) {
             .join(", ")}
         </p> */}
       </div>
-
-      <div className="flex-1" />
-      <SummaryView />
     </div>
   )
 }

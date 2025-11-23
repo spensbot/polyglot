@@ -6,6 +6,7 @@ import { clearHint } from "@/state/appSlice"
 import { wrapClick } from "@/util/wrapClick"
 import { useKeyboardHandling } from "@/state/useKeyboardHandling"
 import { GradeView } from "@/grade/GradeView"
+import { SummaryView } from "@/grade/SummaryView"
 
 function App() {
   const progress = useAppState((state) => state.progress)
@@ -26,10 +27,12 @@ function App() {
         {/* <TitleView className="p-4" /> */}
         <StoryView className="mt-4 p-4 flex-1 min-h-0 overflow-scroll" />
       </div>
-      <ProgressView
-        className="flex-1 min-w-0 p-4 bg-neutral-800"
-        progress={progress}
-      />
+      <div className="flex-1 flex flex-col p-4 bg-neutral-800">
+        <ProgressView className="min-w-0" progress={progress} />
+        <div className="flex-1" />
+        <SummaryView />
+      </div>
+
       <GradeView />
     </div>
   )

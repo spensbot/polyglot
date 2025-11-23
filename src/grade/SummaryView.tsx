@@ -2,7 +2,12 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { setSummary } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
-import { gradeSummaryThunk } from "./gradeSummaryThunk"
+import {
+  DEBUG_gradeSummarySuccess,
+  gradeSummaryThunk,
+} from "./gradeSummaryThunk"
+import { CodeXml } from "lucide-react"
+import { DebugButton } from "@/components/debugButton"
 
 export function SummaryView() {
   const dispatch = useAppDispatch()
@@ -16,14 +21,22 @@ export function SummaryView() {
         onChange={(e) => dispatch(setSummary(e.target.value))}
       />
       <div className="h-2" />
-      <Button
-        size="lg"
-        onClick={() => {
-          dispatch(gradeSummaryThunk())
-        }}
-      >
-        Grade
-      </Button>
+      <div className="flex justify-between gap-2">
+        <Button
+          size="lg"
+          onClick={() => {
+            dispatch(gradeSummaryThunk())
+          }}
+        >
+          Grade
+        </Button>
+        <DebugButton
+          label="Grade (A)"
+          onClick={() => {
+            dispatch(DEBUG_gradeSummarySuccess())
+          }}
+        />
+      </div>
     </div>
   )
 }

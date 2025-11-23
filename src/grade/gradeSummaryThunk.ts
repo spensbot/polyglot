@@ -13,9 +13,11 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
     summary: currentStory.summary,
   })
   dispatch(setGrade(Async.fromResult(grade)))
+}
 
-  // dispatch(setGrade(Async.success({
-  //   letter: 'A',
-  //   reason: "Cause you're the man"
-  // })))
+export function DEBUG_gradeSummarySuccess() {
+  return setGrade(Async.success({
+    letter: 'A',
+    reason: "Cause you're the man"
+  }))
 }

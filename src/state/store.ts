@@ -20,6 +20,7 @@ export const store = configureStore({
     app: appReducer
   },
   preloadedState: {
+    // app: initialState,
     app: loadedState ? { ...initialState, ...loadedState } : initialState
   },
 })

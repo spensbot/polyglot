@@ -1,5 +1,6 @@
 import { Word } from "@/dictionary/Word";
 import { Progress, seenWords, isKnown, isLearning } from "./Progress";
+import { dict } from "@/dictionary/Dictionary";
 
 /** Can be used to multiply llm logics by a bias factor for specific words.
  * 
@@ -26,7 +27,13 @@ export function combined(a: LlmBias, b: LlmBias): LlmBias {
  * but we may want to tip the scale further.
  */
 export function llmBiasByWordFrequency(): LlmBias {
-  return {}
+  const MAX_FACTOR = 5.0
+  // Apply this factor to all words in the frequency list so that the weight asymptotes to 0
+  // probs based on y = 1/x
+
+  const llmBias: LlmBias = {}
+
+  return llmBias
 }
 
 export function llmBiasByProgress(progress: Progress): LlmBias {
@@ -42,4 +49,11 @@ export function llmBiasByProgress(progress: Progress): LlmBias {
   })
 
   return llmBias
+}
+
+export function printForLlm(bias: LlmBias): string {
+  return Object.entries(bias)
+    .sort(([, a], [, b]) => b - a)
+    .map(([word, factor]) => `${word}: ${factor.toFixed(1)}`)
+    .join('\n');
 }
