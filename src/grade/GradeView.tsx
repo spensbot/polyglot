@@ -8,12 +8,11 @@ import {
   isPassingGrade,
   StarCount,
 } from "./Grade"
-import { Button } from "@/components/ui/button"
 import { CircleArrowRight, RotateCcw, Star } from "lucide-react"
-import { retryStory, setGrade } from "@/state/appSlice"
+import { retryStory } from "@/state/appSlice"
 import { createStoryThunk } from "@/story/createStoryThunk"
-import { Log } from "@/util/Log"
 import { StreamedState } from "@/util/StreamedState"
+import { Button } from "@/components/ui/button"
 
 export function GradeView() {
   const grade = useAppState((s) => s.currentStory.grade)
@@ -51,7 +50,7 @@ function StreamedGradeView({ grade }: { grade: StreamedState<Grade> }) {
       return (
         <div className="flex flex-col gap-4">
           <p>Error grading summary: {grade.err}</p>
-          <RetryButton />
+          <ClearErrorButton />
         </div>
       )
   }
@@ -105,14 +104,12 @@ function RetryButton() {
   const dispatch = useAppDispatch()
   return (
     <Button
-      className="flex items-center gap-2"
+      icon={<RotateCcw />}
+      label="Re-read Story"
       onClick={() => {
         dispatch(retryStory())
       }}
-    >
-      <RotateCcw />
-      Re-read Story
-    </Button>
+    />
   )
 }
 
@@ -121,15 +118,21 @@ function ContinueButton() {
 
   return (
     <Button
-      className="flex items-center gap-2"
-      onClick={() => {
-        Log.temp("Continuing to next story")
-        dispatch(createStoryThunk())
-      }}
-    >
-      <CircleArrowRight />
-      Continue
-    </Button>
+      icon={<CircleArrowRight />}
+      label="Continue"
+      onClick={() => dispatch(createStoryThunk())}
+    />
+  )
+}
+
+function ClearErrorButton() {
+  const dispatch = useAppDispatch()
+  return (
+    <Button
+      icon={<CircleArrowRight />}
+      label="Clear Error"
+      onClick={() => dispatch(retryStory())}
+    />
   )
 }
 

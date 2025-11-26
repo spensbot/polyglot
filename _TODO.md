@@ -1,8 +1,6 @@
 # Todos
-- Object Streaming
 - Iterate on LLM grading
 - Iterate on LLM story generation
-- Make sure the app can continue in all failure scenarios (llm failure mostly)
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Bucketed by commonality (extreemely common, very common, common, uncommon, rare, very rare, extreemely rare)
   - Describe how known/learning is calculated
@@ -10,9 +8,6 @@
 - Improve Dictionary
   - Prefer frequency and definitions from [wiktionary](https://en.wiktionary.org/wiki/Appendix:Mandarin_Frequency_lists)
   - Add all Junda Chars
-- Properly handle partial streamed object validation
-  - Async.Loading partial field
-  - Handle final result (await result.object)
 
 ## Future
 - Phone Layout

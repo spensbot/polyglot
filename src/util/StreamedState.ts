@@ -1,12 +1,9 @@
 import { z } from 'zod';
 import { Result } from './Result';
+import { IdleSchema, SuccessSchema, ErrorSchema } from './AsyncState'
 
-export const IdleSchema = z.object({ status: z.literal('idle') });
 export const LoadingSchema = <T_Partial extends z.ZodTypeAny>(partialSchema: T_Partial) =>
   z.object({ status: z.literal('loading'), partial: partialSchema.optional() });
-export const SuccessSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
-  z.object({ status: z.literal('success'), val: dataSchema });
-export const ErrorSchema = z.object({ status: z.literal('error'), err: z.string() });
 
 export function StreamedStateSchema<T extends z.ZodTypeAny, T_Partial extends z.ZodTypeAny = T>(dataSchema: T, partialSchema?: T_Partial) {
   return z.union([

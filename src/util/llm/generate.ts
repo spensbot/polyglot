@@ -3,6 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai"
 import z from "zod"
 import { Err, Ok, Result } from "../Result"
 import { Streamed, StreamedState } from "../StreamedState"
+import { Log } from "../Log"
 
 const openai = createOpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -20,6 +21,7 @@ export async function generate(prompt: string): Promise<Result<string>> {
     })
     return Ok(text)
   } catch (e) {
+    Log.error(`generate error`, e)
     return Err(String(e))
   }
 }
@@ -35,6 +37,7 @@ export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Pr
     })
     return Ok(result.object)
   } catch (e) {
+    Log.error(`generateObj error`, e)
     return Err(String(e))
   }
 }
@@ -50,13 +53,18 @@ export async function streamObj<T, T_Partial>(prompt: string, schema: z.ZodSchem
 
   try {
     for await (const partialObj of partialObjectStream) {
-      const t_partial = partialSchema.parse(partialObj)
-      onData(Streamed.loading(t_partial))
+      const t_partial = partialSchema.safeParse(partialObj)
+      if (t_partial.success) {
+        onData(Streamed.loading(t_partial.data))
+      } else {
+        Log.error(`streamObj error parsing partial ${JSON.stringify(partialObj, null, 2)}`, t_partial.error)
+      }
     }
 
     const t = await object as T
     onData(Streamed.success(t))
   } catch (e) {
+    Log.error(`streamObj error`, e)
     onData(Streamed.error(String(e)))
   }
 }

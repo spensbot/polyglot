@@ -2,9 +2,11 @@ import { NOT_WORDS } from "@/dictionary/notWords"
 import { ParsedWord } from "./Story"
 import { SimpleWordView, WordView } from "./WordView"
 import { cn } from "@/lib/utils"
-import { useAppState } from "@/state/hooks"
+import { useAppDispatch, useAppState } from "@/state/hooks"
 import { StreamedState } from "@/util/StreamedState"
 import { ParsedStory } from "./ParsedStory"
+import { Button } from "@/components/ui/button"
+import { createStoryThunk } from "./createStoryThunk"
 
 interface Props {
   className?: string
@@ -26,6 +28,8 @@ export function StoryView({ className }: Props) {
 }
 
 function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
+  const dispatch = useAppDispatch()
+
   switch (story.status) {
     case "idle":
       return <div className="italic">Loading story...</div>
@@ -38,7 +42,12 @@ function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
     case "success":
       return <ParsedStoryView story={story.val} />
     case "error":
-      return <div>Error Loading Story: {story.err}</div>
+      return (
+        <>
+          <div>Error Loading Story: {story.err}</div>
+          <Button label="Retry" onClick={() => dispatch(createStoryThunk())} />
+        </>
+      )
   }
 }
 

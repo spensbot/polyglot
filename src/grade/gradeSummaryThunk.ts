@@ -2,8 +2,15 @@ import { setGrade } from "@/state/appSlice"
 import { gradeSummaryPrompt } from "./gradeSummary"
 import { AppThunk } from "@/state/store"
 import { streamObj } from "@/util/llm/generate"
-import { Grade, GradeSchema } from "./Grade"
+import { Grade, GradeSchema, isGradeLetter } from "./Grade"
 import { Streamed, StreamedState } from "@/util/StreamedState"
+import z from "zod"
+
+const PartialGradeSchema = GradeSchema.extend({
+  letter: z.string()
+}).partial()
+type PartialGrade = z.infer<typeof PartialGradeSchema>;
+
 
 export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
   const currentStory = getState().app.currentStory
@@ -14,20 +21,20 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
 
   const prompt = gradeSummaryPrompt({ story: story.val.story, summary: currentStory.summary })
 
-  streamObj(prompt, GradeSchema, GradeSchema.partial(), (result) => {
+  streamObj(prompt, GradeSchema, PartialGradeSchema, (result) => {
     dispatch(setGrade(mapStreamedGrade(result)))
   })
 }
 
-function mapStreamedGrade(streamed: StreamedState<Grade, Partial<Grade>>): StreamedState<Grade> {
+function mapStreamedGrade(streamed: StreamedState<Grade, PartialGrade>): StreamedState<Grade> {
   switch (streamed.status) {
     case 'idle':
       return Streamed.idle();
     case 'loading': {
+      const maybeLetter = streamed.partial?.letter;
       const grade: Grade = {
-        letter: 'C',
-        reason: '',
-        ...streamed.partial
+        letter: isGradeLetter(maybeLetter) ? maybeLetter : 'F',
+        reason: streamed.partial?.reason || ''
       };
       return Streamed.loading(grade);
     }

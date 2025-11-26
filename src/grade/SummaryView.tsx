@@ -26,11 +26,10 @@ export function SummaryView() {
           onClick={() => {
             dispatch(gradeSummaryThunk())
           }}
-        >
-          Grade
-        </Button>
+          label="Submit"
+        />
         <DebugButton
-          label="Grade (A)"
+          label="Submit"
           onClick={() => {
             dispatch(DEBUG_gradeSummarySuccess())
           }}

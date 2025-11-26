@@ -13,10 +13,9 @@ export function DebugButton({ label, onClick }: Props) {
     <Button
       size="lg"
       onClick={onClick}
+      icon={<CodeXml />}
+      label={label}
       className="flex items-center border-4 border-fuchsia-400 bg-fuchsia-800 text-white"
-    >
-      <CodeXml />
-      {label}
-    </Button>
+    />
   )
 }

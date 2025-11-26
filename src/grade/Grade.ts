@@ -8,6 +8,10 @@ C: Satisfactory understanding
 D: Some understanding, but with significant gaps
 F: Poor or no understanding`)
 export type GradeLetter = z.infer<typeof GradeLetterSchema>
+export function isGradeLetter(s: any): s is GradeLetter {
+  if (typeof s !== "string") return false
+  return ["A", "B", "C", "D", "F"].includes(s)
+}
 
 export const GradeSchema = z.object({
   letter: GradeLetterSchema,
