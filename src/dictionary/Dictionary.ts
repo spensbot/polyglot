@@ -1,29 +1,66 @@
-import { CedictDb, type CedictEntry } from "./chinese/cedict";
-import { loadJunda, type JundaEntry } from "./chinese/junda";
+import { Log } from "@/util/Log";
+import { WiktionaryDb, WiktionaryEntry } from "./chinese/WiktionaryDb";
 import { Word } from "./Word";
+import { CedictDb } from "./chinese/cedict";
+import { JundaEntry, loadJunda } from "./chinese/junda";
 
 export class Dictionary {
   readonly junda: Map<string, JundaEntry> = loadJunda();
-  private constructor(private cedictDb: CedictDb) { }
+  private constructor(private wiktionaryDb: WiktionaryDb, private cedictDb: CedictDb) { }
 
   static async create(): Promise<Dictionary> {
+    const wiktionaryDb = await WiktionaryDb.loadFromUrl("/wiktionary.tsv");
     const cedictDb = await CedictDb.create();
-    return new Dictionary(cedictDb);
+    if (!wiktionaryDb.ok) {
+      Log.error(wiktionaryDb.err);
+      return new Dictionary(WiktionaryDb.empty(), cedictDb);
+    } else {
+      return new Dictionary(wiktionaryDb.val, cedictDb);
+    }
   }
 
-  async define(word: Word): Promise<CedictEntry | undefined> {
-    return this.cedictDb.get(word);
+  private get(word: Word): WiktionaryEntry | JundaEntry | null {
+    const wiktionary = this.wiktionaryDb.bySimplified.get(word)?.[0];
+    if (wiktionary) return wiktionary;
+
+    const junda = this.junda.get(word);
+    if (junda) return junda;
+
+    return null;
+  }
+
+  define(word: Word): string | null {
+    return this.get(word)?.definition ?? null;
+  }
+
+  pinyin(word: Word): string | null {
+    return this.wiktionaryDb.bySimplified.get(word)?.[0].pinyin ?? null;
+  }
+
+  frequncyRanking(word: Word): number | null {
+    return this.wiktionaryDb.bySimplified.get(word)?.[0].frequencyRaking ?? null;
   }
 
   segment(text: string): Word[] {
     const segmenterZh = new Intl.Segmenter("zh-CN", { granularity: "word" });
 
-    const segments = segmenterZh.segment(text)
-    return Array.from(segments).map(segment => segment.segment as Word);
-  }
+    const segments = Array.from(segmenterZh.segment(text))
 
-  frequency(char: string): JundaEntry | undefined {
-    return this.junda.get(char);
+    const words: Word[] = [];
+
+    for (const s of segments) {
+      const maybeWord = s.segment as Word;
+      const entry = dict.define(maybeWord);
+      if (entry) {
+        words.push(maybeWord);
+      } else {
+        for (const char of Array.from(maybeWord)) {
+          words.push(char as Word);
+        }
+      }
+    }
+
+    return words;
   }
 }
 

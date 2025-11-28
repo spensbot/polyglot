@@ -8,7 +8,8 @@ import { Char, Word } from "@/dictionary/Word"
 import { ParsedWord } from "./Story"
 
 export function HintView({ word }: { word: ParsedWord }) {
-  const entry = useAsync(() => dict.define(word.word), [word])
+  const definition = dict.define(word.word)
+  const pinyin = dict.pinyin(word.word)
 
   const hintLevel = useAppState((state) =>
     state.hint?.word?.parsedId === word.parsedId ? state.hint.level : 0
@@ -28,15 +29,11 @@ export function HintView({ word }: { word: ParsedWord }) {
         "rounded shadow-lg bg-blue-400 text-white p-2 max-w-90 relative"
       )}
     >
-      {entry.status === "success" && entry.val && (
-        <p>{entry.val.pinyin.map(prettyPinyin).join(" ")} </p>
-      )}
+      {pinyin && <p>{pinyin} </p>}
       {hintLevel > 1 && (
         <>
-          {entry.status === "success" && entry.val && (
-            <p className="text-sm font-extralight">
-              {entry.val.definitions.join(", ")}{" "}
-            </p>
+          {definition && (
+            <p className="text-sm font-extralight">{definition}</p>
           )}
         </>
       )}
@@ -55,15 +52,12 @@ export function HintView({ word }: { word: ParsedWord }) {
 }
 
 function CharView({ char }: { char: string }) {
-  const entry = useAsync(() => dict.define(char as Word), [char])
+  const definition = dict.define(char as Word)
+
   return (
     <div className="flex gap-2 items-start">
       <span className="text-lg">{char}</span>
-      {entry.status === "success" && (
-        <span className="opacity-90 font-thin">
-          {entry.val?.definitions.join(", ")}{" "}
-        </span>
-      )}
+      {definition && <span className="opacity-90 font-thin">{definition}</span>}
     </div>
   )
 }

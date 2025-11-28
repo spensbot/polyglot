@@ -1,5 +1,6 @@
 import jundaText from './data/junda_frequency_list.json?raw'
 import { Char } from '../Word';
+import { prettyPinyin } from './prettyPinyin';
 
 interface JundaEntryIn {
   n: number;
@@ -9,7 +10,7 @@ interface JundaEntryIn {
 }
 
 export interface JundaEntry {
-  ranking: number;
+  frequencyRanking: number;
   simplified: Char;
   pinyin: string;
   definition: string;
@@ -20,9 +21,9 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
   const list = data as JundaEntryIn[];
   return new Map<string, JundaEntry>(
     list.map((entry) => [entry.char, {
-      ranking: entry.n,
+      frequencyRanking: entry.n,
       simplified: entry.char,
-      pinyin: entry.pin,
+      pinyin: prettyPinyin(entry.pin),
       definition: entry.def,
     }])
   );

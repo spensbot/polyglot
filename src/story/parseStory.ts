@@ -4,22 +4,7 @@ import { dict } from "@/dictionary/Dictionary";
 import { ParsedStory } from "./ParsedStory";
 
 async function parseLine(line: string): Promise<Word[]> {
-  const segments = dict.segment(line);
-
-  const results: Word[] = [];
-
-  for (const seg of segments) {
-    const definition = await dict.define(seg);
-    if (definition) {
-      results.push(seg);
-    } else {
-      for (const char of Array.from(seg)) {
-        results.push(char as Word);
-      }
-    }
-  }
-
-  return results;
+  return dict.segment(line);
 }
 
 async function parseContent(content: string): Promise<Word[][]> {
