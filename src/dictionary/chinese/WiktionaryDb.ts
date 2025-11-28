@@ -12,6 +12,7 @@ export interface WiktionaryEntry {
 }
 
 export class WiktionaryDb {
+  /** There are often multiple entries per word */
   bySimplified: Map<string, WiktionaryEntry[]> = new Map()
 
   private constructor(tsv: string) {
@@ -81,7 +82,8 @@ export class WiktionaryDb {
     try {
       const resp = await fetch(url)
       const tsv = await resp.text()
-      return Ok(new WiktionaryDb(tsv))
+      const db = new WiktionaryDb(tsv)
+      return Ok(db)
     } catch (e) {
       return Err("Failed to load Wiktionary DB: " + String(e))
     }

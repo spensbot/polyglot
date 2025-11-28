@@ -2,9 +2,6 @@
 - New Mobile-First Layout
   - Home, Progress, & History buttons in bottom menu bar
   - Summary/Submit at bottom of home view
-- Improve Dictionary
-  - Prefer frequency and definitions from [wiktionary](https://en.wiktionary.org/wiki/Appendix:Mandarin_Frequency_lists)
-  - If there are multiple definitions for a given word, prefer the most common
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Sorted/colored by commonality
   - Describe how known/learning is calculated
