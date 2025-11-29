@@ -22,12 +22,6 @@ export function ProgressView({ className }: Props) {
     <div className={cn("flex flex-col", className)}>
       <div className="flex justify-between items-center">
         <p className="text-3xl">{level.level}</p>
-        <Button
-          label="Deep Dive"
-          variant="link"
-          size="sm"
-          onClick={() => dispatch(navigate("Progress"))}
-        />
       </div>
       <div className="h-5" />
       <ProgressBar percent={level.progressToNext * 100} height="1rem" />
@@ -58,18 +52,24 @@ export function ProgressView({ className }: Props) {
 
 export function WordProgressGroup({
   label,
+  description,
   words,
   selected,
   setSelected,
 }: {
   label: string
+  description?: string
   words: WordProgress[]
   selected: WordProgress | null
   setSelected: (word: WordProgress | null) => void
 }) {
   return (
     <div>
-      <div className="text-3xl mb-4">{label}</div>
+      <div className="text-xl mb-2 flex items-baseline gap-2">
+        {label}
+        <span className="text-sm opacity-50">({words.length})</span>
+        <span className="text-sm opacity-50">{description}</span>
+      </div>
       <div className="flex flex-wrap gap-x-2 gap-y-1">
         {words.map((w) => {
           return (

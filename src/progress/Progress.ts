@@ -77,5 +77,5 @@ export const knownWords = (progress: Progress) => seenWords(progress).filter(isK
 /** Words that needed a hint recently */
 export const learningWords = (progress: Progress) => seenWords(progress).filter(isLearning)
 
-/** Words that have been seen, but aren't being learned */
-export const familiarWords = (progress: Progress) => seenWords(progress).filter((w) => !isLearning(w))
+/** Words that have been seen, but aren't known or being learned */
+export const familiarWords = (progress: Progress) => seenWords(progress).filter((w) => !isLearning(w) && !isKnown(w));
