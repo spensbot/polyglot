@@ -1,7 +1,6 @@
 # Todos
 - New Mobile-First Layout
   - Home, Progress, & History buttons in bottom menu bar
-  - Summary/Submit at bottom of home view
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Sorted/colored by commonality
   - Describe how known/learning is calculated

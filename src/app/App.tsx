@@ -6,7 +6,6 @@ import { useKeyboardHandling } from "@/state/useKeyboardHandling"
 import { ProgressView } from "@/progress/ProgressView"
 import { Home } from "./Home"
 import { HistoryView } from "@/progress/HistoryView"
-import { SummaryView } from "@/grade/SummaryView"
 import { MenuBar } from "./MenuBar"
 
 function App() {
@@ -17,17 +16,19 @@ function App() {
 
   return (
     <div
-      className={cn("w-screen h-screen bg-neutral-900")}
+      className={cn("w-screen h-screen bg-neutral-900 flex flex-col")}
       onClick={wrapClick((e) => {
         dispatch(clearHint())
       })}
     >
-      {nav === "Home" && <Home />}
-      {nav === "Progress" && <ProgressView />}
-      {nav === "History" && <HistoryView />}
-      {/* <div className="absolute bottom-4 w-full flex justify-center">
-        <MenuBar className="bg-neutral-800 overflow-hidden rounded-full pointer-events-auto" />
-      </div> */}
+      <div className="flex-1 min-h-0">
+        {nav === "Home" && <Home />}
+        {nav === "Progress" && <ProgressView />}
+        {nav === "History" && <HistoryView />}
+      </div>
+      <div className="bottom-9 w-full flex justify-center bg-neutral-800 border-t">
+        <MenuBar className="bg-neutral-800 pointer-events-auto" />
+      </div>
     </div>
   )
 }

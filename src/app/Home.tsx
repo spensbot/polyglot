@@ -21,13 +21,13 @@ export function Home() {
         <div className="w-190 h-full min-h-0 flex flex-col">
           <StoryView className="w-full p-4 pb-8 min-h-0 overflow-scroll flex-1" />
           <div className="z-10 p-4 pt-0 -mt-6 w-full">
-            <SummaryView className="bg-neutral-700" />
+            <SummaryView className="bg-neutral-800/60 border backdrop-blur-sm" />
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col p-4 bg-neutral-800 max-md:hidden">
+      {/* <div className="flex-1 flex flex-col p-4 bg-neutral-800 max-md:hidden">
         <ProgressOverview className="min-w-0" />
-      </div>
+      </div> */}
       <GradeView className="absolute inset-0 bg-black/50 z-40" />
     </div>
   )
