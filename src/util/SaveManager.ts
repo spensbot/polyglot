@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import debounce from 'lodash.debounce'
-import { Err, Ok, Result } from './Result'
+import { Err, Ok, Result } from './result/Result'
 
 interface Config {
   debounce_s: number

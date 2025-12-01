@@ -1,6 +1,7 @@
-import jundaText from './data/junda_frequency_list.json?raw'
+import { fetchResult } from '@/util/result/fetchResults';
 import { Char } from '../Word';
 import { prettyPinyin } from './prettyPinyin';
+import { rmap } from '@/util/result/Result';
 
 interface JundaEntryIn {
   n: number;
@@ -29,6 +30,7 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
   );
 }
 
-export function loadJunda() {
-  return parseJunda(jundaText);
+export async function loadJunda() {
+  const jundaJson = await fetchResult('/junda_frequency_list.json');
+  return rmap(jundaJson, parseJunda);
 }

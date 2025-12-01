@@ -1,7 +1,7 @@
 import { generateText, generateObject, streamObject } from "ai"
 import { createOpenAI } from "@ai-sdk/openai"
 import z from "zod"
-import { Err, Ok, Result } from "../Result"
+import { Err, Ok, Result } from "../result/Result"
 import { Streamed, StreamedState } from "../StreamedState"
 import { Log } from "../Log"
 

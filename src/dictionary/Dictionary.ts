@@ -5,18 +5,22 @@ import { CedictDb } from "./chinese/cedict";
 import { JundaEntry, loadJunda } from "./chinese/junda";
 
 export class Dictionary {
-  readonly junda: Map<string, JundaEntry> = loadJunda();
-  private constructor(private wiktionaryDb: WiktionaryDb, private cedictDb: CedictDb) { }
+  private constructor(private wiktionaryDb: WiktionaryDb, private junda: Map<string, JundaEntry>) { }
 
   static async create(): Promise<Dictionary> {
     const wiktionaryDb = await WiktionaryDb.loadFromUrl("/wiktionary.tsv");
-    const cedictDb = await CedictDb.create();
+    const jundaDb = await loadJunda();
+
     if (!wiktionaryDb.ok) {
       Log.error(wiktionaryDb.err);
-      return new Dictionary(WiktionaryDb.empty(), cedictDb);
-    } else {
-      return new Dictionary(wiktionaryDb.val, cedictDb);
+      return new Dictionary(WiktionaryDb.empty(), new Map<string, JundaEntry>());
     }
+    if (!jundaDb.ok) {
+      Log.error(jundaDb.err);
+      return new Dictionary(wiktionaryDb.val, new Map<string, JundaEntry>());
+    }
+
+    return new Dictionary(wiktionaryDb.val, jundaDb.val);
   }
 
   private get(word: Word): WiktionaryEntry | JundaEntry | null {

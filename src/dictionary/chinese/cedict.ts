@@ -1,5 +1,5 @@
 import { get, getAll, openDb } from '@/util/indexedDbUtil';
-import cedictData from './data/cedict_ts.u8?raw'
+// import cedictData from './data/cedict_ts.u8?raw'
 import { Log } from '@/util/Log';
 import { Word } from '../Word';
 import { AsyncCache } from '@/util/AsyncCache';
@@ -62,8 +62,9 @@ export class CedictDb {
   }
 
   static async create(): Promise<CedictDb> {
-    const db = await createCedictDb(() => parseCedict(cedictData))
-    return new CedictDb(db)
+    // const db = await createCedictDb(() => parseCedict(cedictData))
+    // return new CedictDb(db)
+    throw new Error("CedictDb.create not implemented");
   }
 
   async get(word: Word): Promise<CedictEntry | undefined> {

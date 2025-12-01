@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Result } from './Result';
+import { Result } from './result/Result';
 
 export const IdleSchema = z.object({ status: z.literal('idle') });
 export const LoadingSchema = z.object({ status: z.literal('loading') });

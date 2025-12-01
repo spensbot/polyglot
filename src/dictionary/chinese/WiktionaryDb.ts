@@ -1,4 +1,4 @@
-import { Err, Ok, Result } from "@/util/Result"
+import { Err, Ok, Result } from "@/util/result/Result"
 
 export interface WiktionaryEntry {
   traditional: string

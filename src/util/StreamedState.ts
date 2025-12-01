@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Result } from './Result';
+import { Result } from './result/Result';
 import { IdleSchema, SuccessSchema, ErrorSchema } from './AsyncState'
 
 export const LoadingSchema = <T_Partial extends z.ZodTypeAny>(partialSchema: T_Partial) =>
