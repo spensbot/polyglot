@@ -9,7 +9,7 @@ import { dict } from "@/dictionary/Dictionary";
  */
 export type LlmBias = Record<Word, number>;
 
-export function combined(a: LlmBias, b: LlmBias): LlmBias {
+export function combinedBias(a: LlmBias, b: LlmBias): LlmBias {
   const result = { ...a } as LlmBias;
   for (const [w, bias] of Object.entries(b)) {
     const word = w as Word;
@@ -27,24 +27,31 @@ export function combined(a: LlmBias, b: LlmBias): LlmBias {
  * but we may want to tip the scale further.
  */
 export function llmBiasByWordFrequency(): LlmBias {
-  const MAX_FACTOR = 5.0
-  // Apply this factor to all words in the frequency list so that the weight asymptotes to 0
-  // probs based on y = 1/x
+  const MAX_BIAS = 2.0 // The bias of the #1 most frequent word
+  const NO_BIAS_RANKING = 3000 // Where the bias becomes 1.0
+  const slope = (MAX_BIAS - 1.0) / (1 - NO_BIAS_RANKING)
 
   const llmBias: LlmBias = {}
+
+  dict.all().forEach(entry => {
+    const rank = entry.frequencyRanking
+    if (rank !== null) {
+      llmBias[entry.simplified as Word] = MAX_BIAS + slope * rank
+    }
+  })
 
   return llmBias
 }
 
-export function llmBiasByProgress(progress: Progress): LlmBias {
+export function llmBiasForProgress(progress: Progress): LlmBias {
   const seen = seenWords(progress)
 
   const llmBias: LlmBias = {}
 
   seen.forEach(w => {
-    let factor = 2
-    if (isKnown(w)) factor *= 0.9
-    if (isLearning(w)) factor *= 2.0
+    let factor = 1.0 // base factor for seen words
+    if (isKnown(w)) factor *= 1.0
+    if (isLearning(w)) factor *= 3.0
     llmBias[w.word] = factor
   })
 
@@ -54,6 +61,7 @@ export function llmBiasByProgress(progress: Progress): LlmBias {
 export function printBiasForLlm(bias: LlmBias): string {
   return Object.entries(bias)
     .sort(([, a], [, b]) => b - a)
+    .slice(0, 100)
     .map(([word, factor]) => `${word}: ${factor.toFixed(1)}`)
     .join('\n');
 }

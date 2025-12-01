@@ -29,6 +29,10 @@ export class Dictionary {
     return null;
   }
 
+  all(): WiktionaryEntry[] {
+    return Array.from(this.wiktionaryDb.bySimplified.values()).flat();
+  }
+
   define(word: Word): string | null {
     return this.get(word)?.definition ?? null;
   }

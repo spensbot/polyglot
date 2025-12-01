@@ -1,12 +1,15 @@
 import { infoSection } from '@/util/llm/promptUtil'
 import { knownWords, Progress } from '@/progress/Progress'
-import { llmBiasByProgress, printBiasForLlm } from '@/progress/LlmBias'
+import { combinedBias, llmBiasByWordFrequency, llmBiasForProgress, printBiasForLlm } from '@/progress/LlmBias'
 import { computeLevel, Level } from '@/progress/Level'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
 export function createStoryPrompt(progress: Progress): string {
-  const llmBias = llmBiasByProgress(progress)
+  const llmBias_progress = llmBiasForProgress(progress)
+  const llmBias_frequency = llmBiasByWordFrequency()
+  const llmBias = combinedBias(llmBias_progress, llmBias_frequency)
+
   const level = computeLevel(knownWords(progress).length)
 
   return `
