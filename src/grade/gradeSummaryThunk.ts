@@ -3,6 +3,7 @@ import { gradeSummaryPrompt } from "./gradeSummary"
 import { AppThunk } from "@/state/store"
 import { streamObj } from "@/util/llm/generate"
 import { Grade, GradeSchema, isGradeLetter } from "./Grade"
+import { createOpenAI } from "@ai-sdk/openai"
 import { Streamed, StreamedState } from "@/util/StreamedState"
 import z from "zod"
 import { Log } from "@/util/Log"
@@ -23,9 +24,14 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
   const prompt = gradeSummaryPrompt({ story: story.val.story, summary: currentStory.summary })
   Log.info("createStory prompt", prompt)
 
+  const openAi = getState().app.secrets.openai
+
   streamObj({
     prompt,
-    model: 'gpt-4.1-nano'
+    model: createOpenAI({
+      apiKey: openAi.apiKey,
+      organization: openAi.orgId
+    })('gpt-4.1-nano')
   }, GradeSchema, PartialGradeSchema, (result) => {
     dispatch(setGrade(mapStreamedGrade(result)))
   })

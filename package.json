@@ -13,6 +13,7 @@
     "start": "pnpm dev",
     "test": "vitest",
     "generate:wiktionary": "tsx src/dictionary/chinese/parsing/parseWiktionaryToTsv.ts",
+    "predeploy": "pnpm build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

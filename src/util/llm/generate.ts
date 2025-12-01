@@ -1,17 +1,11 @@
-import { generateText, generateObject, streamObject } from "ai"
-import { createOpenAI } from "@ai-sdk/openai"
+import { generateText, generateObject, streamObject, LanguageModel } from "ai"
 import z from "zod"
 import { Err, Ok, Result } from "../result/Result"
 import { Streamed, StreamedState } from "../StreamedState"
 import { Log } from "../Log"
 
-const openai = createOpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  organization: import.meta.env.VITE_OPENAI_ORGANIZATION_ID
-})
-
 interface Options {
-  model: Parameters<typeof openai>[0],
+  model: LanguageModel
   prompt: string,
   temperature?: number,
   maxOutputTokens?: number,
@@ -20,8 +14,7 @@ interface Options {
 export async function generate(options: Options): Promise<Result<string>> {
   try {
     const { text } = await generateText({
-      ...options,
-      model: openai(options.model)
+      ...options
     })
     return Ok(text)
   } catch (e) {
@@ -34,7 +27,6 @@ export async function generateObj<T>(options: Options, schema: z.ZodSchema<T>): 
   try {
     const result = await generateObject({
       ...options,
-      model: openai(options.model),
       schema
     })
     return Ok(result.object)
@@ -46,23 +38,32 @@ export async function generateObj<T>(options: Options, schema: z.ZodSchema<T>): 
 
 export async function streamObj<T, T_Partial>(options: Options, schema: z.ZodSchema<T>, partialSchema: z.ZodSchema<T_Partial>, onData: (data: StreamedState<T, T_Partial>) => void) {
   try {
-    const { partialObjectStream, object } = streamObject({
+    const { fullStream, object } = streamObject({
       ...options,
-      model: openai(options.model),
       schema
     })
 
-    for await (const partialObj of partialObjectStream) {
-      const t_partial = partialSchema.safeParse(partialObj)
-      if (t_partial.success) {
-        onData(Streamed.loading(t_partial.data))
-      } else {
-        Log.error(`streamObj error parsing partial ${JSON.stringify(partialObj, null, 2)}`, t_partial.error)
+    let streamError: unknown = undefined
+    for await (const event of fullStream) {
+      if (event.type === 'object') {
+        const t_partial = partialSchema.safeParse(event.object)
+        if (t_partial.success) {
+          onData(Streamed.loading(t_partial.data))
+        } else {
+          Log.error(`streamObj error parsing partial ${JSON.stringify(event.object, null, 2)}`, t_partial.error)
+        }
+      } else if (event.type === 'error') {
+        streamError = event.error
+        Log.error(`streamObj stream error`, event.error)
       }
     }
 
-    const t = await object as T
-    onData(Streamed.success(t))
+    if (streamError) {
+      onData(Streamed.error(String(streamError)))
+    } else {
+      const t = await object as T
+      onData(Streamed.success(t))
+    }
   } catch (e) {
     Log.error(`streamObj error`, e)
     onData(Streamed.error(String(e)))
