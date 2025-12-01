@@ -8,8 +8,8 @@ export class Dictionary {
   private constructor(private wiktionaryDb: WiktionaryDb, private junda: Map<string, JundaEntry>) { }
 
   static async create(): Promise<Dictionary> {
-    const wiktionaryDb = await WiktionaryDb.loadFromUrl("/Polyglot/wiktionary.tsv");
-    const jundaDb = await loadJundaFromUrl('/Polyglot/junda_frequency_list.json');
+    const wiktionaryDb = await WiktionaryDb.loadFromUrl("/polyglot/wiktionary.tsv");
+    const jundaDb = await loadJundaFromUrl('/polyglot/junda_frequency_list.json');
 
     if (!wiktionaryDb.ok) {
       Log.error(wiktionaryDb.err);

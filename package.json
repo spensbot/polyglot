@@ -1,9 +1,9 @@
 {
-  "name": "polyglot-2",
+  "name": "polyglot",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://spensbot.github.io/Polyglot/",
+  "homepage": "https://spensbot.github.io/polyglot/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
