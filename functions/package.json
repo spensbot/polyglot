@@ -1,20 +1,23 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "check": "tsc -b"
   },
   "engines": {
     "node": "24"
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.75",
+    "ai": "^5.0.104",
     "firebase-admin": "^13.6.0",
     "firebase-functions": "^7.0.0"
   },

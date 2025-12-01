@@ -4,6 +4,7 @@ import { Provider } from "react-redux"
 import { store } from "./state/store.ts"
 import "./index.css"
 import App from "./app/App.tsx"
+import "@/firebase/initFirebase.ts"
 
 document.documentElement.classList.add("dark")
 
