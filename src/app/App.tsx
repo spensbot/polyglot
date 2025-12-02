@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div
-      className={cn("w-full h-full bg-neutral-900 flex flex-col")}
+      className={cn("w-dvw h-dvh bg-neutral-900 flex flex-col")}
       onClick={wrapClick((e) => {
         dispatch(clearHint())
       })}
