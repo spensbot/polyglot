@@ -30,7 +30,6 @@ export const store = configureStore({
 store.subscribe(() => {
   const persistedState = {
     ...store.getState().app,
-    activeSession: undefined // Don't persist the active session
   }
 
   saveManager.stateUpdated('PersistedAppState2', persistedState)

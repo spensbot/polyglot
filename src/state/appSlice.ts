@@ -34,7 +34,7 @@ export const AppStateSchema = z.object({
   nav: NavSchema,
   pastStories: z.array(StoryEvalSchema),
   secrets: SecretsSchema,
-  modal: ModalSchema.optional(),
+  modal: ModalSchema.nullable().default(null),
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -134,7 +134,7 @@ export const appSlice = createSlice({
     setOpenAiSecrets: (state, action: PayloadAction<z.infer<typeof ApiSecretsSchema>>) => {
       state.secrets.openai = action.payload
     },
-    setModal: (state, action: PayloadAction<Modal | undefined>) => {
+    setModal: (state, action: PayloadAction<Modal | null>) => {
       state.modal = action.payload
     }
   },

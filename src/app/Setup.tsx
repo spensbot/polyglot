@@ -45,7 +45,7 @@ export function Setup() {
         className="mt-2"
         label="Done"
         onClick={() => {
-          dispatch(setModal(undefined))
+          dispatch(setModal(null))
         }}
       />
     </div>

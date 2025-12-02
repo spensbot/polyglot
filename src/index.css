@@ -124,4 +124,11 @@
     padding: 0;
     overflow: hidden; /* Prevent obnoxious whole-app rubber band effect */
   }
+  #root {
+    height: 100svh;            /* SHRINK with keyboard */
+    width: 100vw;
+    overflow: hidden;          /* Prevent weird scroll jumps */
+    display: flex;
+    flex-direction: column;
+  }
 }
