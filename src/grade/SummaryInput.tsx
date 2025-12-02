@@ -9,7 +9,7 @@ import {
 import { AArrowUp, ArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export function SummaryView({ className }: { className?: string }) {
+export function SummaryInput({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
   const { summary } = useAppState((s) => s.currentStory)
 

@@ -1,7 +1,6 @@
 import { GradeView } from "@/grade/GradeView"
-import { SummaryView } from "@/grade/SummaryView"
+import { SummaryInput } from "@/grade/SummaryInput"
 import { cn } from "@/lib/utils"
-import { ProgressOverview } from "@/progress/ProgressOverview"
 import { clearHint } from "@/state/appSlice"
 import { StoryView } from "@/story/StoryView"
 import { wrapClick } from "@/util/wrapClick"
@@ -21,7 +20,7 @@ export function Home() {
         <div className="w-3xl h-full min-h-0 flex flex-col">
           <StoryView className="w-full p-4 pb-8 min-h-0 overflow-scroll flex-1" />
           <div className="z-10 p-4 pt-0 -mt-6 w-full">
-            <SummaryView className="bg-neutral-800/60 border backdrop-blur-sm" />
+            <SummaryInput className="bg-neutral-800/60 border backdrop-blur-sm" />
           </div>
         </div>
       </div>
