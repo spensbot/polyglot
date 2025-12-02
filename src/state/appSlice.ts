@@ -10,17 +10,18 @@ import { Grade } from '@/grade/Grade'
 import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
-import { Log } from '@/util/Log'
 
 const NavSchema = z.literal(['Home', 'Progress', 'History'])
 export type Nav = z.infer<typeof NavSchema>
+
+const ModalSchema = z.literal(['Setup'])
+export type Modal = z.infer<typeof ModalSchema>
 
 export const ApiSecretsSchema = z.object({
   orgId: z.string(),
   apiKey: z.string(),
 })
 export const SecretsSchema = z.object({
-  editing: z.boolean(),
   openai: ApiSecretsSchema,
 })
 
@@ -33,6 +34,7 @@ export const AppStateSchema = z.object({
   nav: NavSchema,
   pastStories: z.array(StoryEvalSchema),
   secrets: SecretsSchema,
+  modal: ModalSchema.optional(),
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -57,12 +59,12 @@ export const initialState: AppState = {
   nav: 'Home',
   pastStories: [],
   secrets: {
-    editing: true,
     openai: {
       orgId: '',
       apiKey: '',
     }
-  }
+  },
+  modal: 'Setup'
 }
 
 export const appSlice = createSlice({
@@ -132,8 +134,8 @@ export const appSlice = createSlice({
     setOpenAiSecrets: (state, action: PayloadAction<z.infer<typeof ApiSecretsSchema>>) => {
       state.secrets.openai = action.payload
     },
-    setEditingSecrets: (state, action: PayloadAction<boolean>) => {
-      state.secrets.editing = action.payload
+    setModal: (state, action: PayloadAction<Modal | undefined>) => {
+      state.modal = action.payload
     }
   },
 })
@@ -149,7 +151,7 @@ export const {
   retryStory,
   setSummary,
   setOpenAiSecrets,
-  setEditingSecrets
+  setModal
 } = appSlice.actions
 
 export default appSlice.reducer

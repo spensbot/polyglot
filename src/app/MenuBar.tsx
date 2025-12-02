@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { navigate, setEditingSecrets } from "@/state/appSlice"
+import { navigate, setModal } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
-import {
-  BookOpen,
-  ChartNoAxesColumnIncreasing,
-  GraduationCap,
-  History,
-} from "lucide-react"
-import { act } from "react"
+import { BookOpen, ChartNoAxesColumnIncreasing, History } from "lucide-react"
+
+const SETUP_LABEL = "Setup"
 
 export function MenuBar({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
@@ -17,7 +13,7 @@ export function MenuBar({ className }: { className?: string }) {
   return (
     <div className={cn("flex", className)}>
       <Button
-        label="Set Secrets"
+        label={SETUP_LABEL}
         variant="invisible"
         className="shrink min-w-0"
       />
@@ -43,10 +39,10 @@ export function MenuBar({ className }: { className?: string }) {
       /> */}
       <div className="flex-1" />
       <Button
-        label="Set Secrets"
+        label={SETUP_LABEL}
         variant="link"
         className="opacity-50 text-sm"
-        onClick={() => dispatch(setEditingSecrets(true))}
+        onClick={() => dispatch(setModal("Setup"))}
       />
     </div>
   )

@@ -7,16 +7,14 @@ import { ProgressView } from "@/progress/ProgressView"
 import { Home } from "./Home"
 import { HistoryView } from "@/progress/HistoryView"
 import { MenuBar } from "./MenuBar"
-import { Secrets } from "./Secrets"
-import { Modal } from "@/components/Modal"
 import "@/dictionary/Dictionary" // Ensure dictionary is loaded
+import { ModalsView } from "./ModalView"
 
 function App() {
   const dispatch = useAppDispatch()
   useKeyboardHandling()
 
   const nav = useAppState((s) => s.nav)
-  const editingSecrets = useAppState((s) => s.secrets.editing)
 
   return (
     <div
@@ -31,11 +29,7 @@ function App() {
         {nav === "History" && <HistoryView />}
       </div>
       <MenuBar className="bg-neutral-800 pointer-events-auto " />
-      {editingSecrets && (
-        <Modal>
-          <Secrets />
-        </Modal>
-      )}
+      <ModalsView />
     </div>
   )
 }
