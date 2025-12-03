@@ -36,6 +36,10 @@ export class Dictionary {
     return Array.from(this.wiktionaryDb.bySimplified.values()).flat();
   }
 
+  allUnique(): WiktionaryEntry[] {
+    return Array.from(this.wiktionaryDb.bySimplified.values()).map(arr => arr[0]);
+  }
+
   define(word: Word): string | null {
     return this.get(word)?.definition ?? null;
   }

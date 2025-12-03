@@ -12,6 +12,8 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { WordProgressGroup } from "./WordProgressGroup"
 import { Button } from "@/components/ui/button"
 import { resetState } from "@/state/store"
+import { dict } from "@/dictionary/Dictionary"
+import { Word } from "@/dictionary/Word"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
@@ -63,6 +65,21 @@ export function ProgressView() {
           setSelected={setSelected}
           collapsedOnRender={true}
         />
+        {/* <WordProgressGroup
+          label="Unseen"
+          description="Words not yet encountered"
+          words={dict
+            .allUnique()
+            .filter((w) => !progress.wordsSeen[w.simplified as Word])
+            .map((w) => ({
+              word: w.simplified as Word,
+              nSeen: 0,
+              nHints: 0,
+            }))}
+          selected={selected}
+          setSelected={setSelected}
+          collapsedOnRender={true}
+        /> */}
       </div>
     </div>
   )

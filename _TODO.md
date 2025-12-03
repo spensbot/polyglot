@@ -1,4 +1,5 @@
 # Todos
+- Llm bias tweak: Split people on different paths early based on how many hints they've asked for, and how many words they know. People with low hint to known ratio are experienced, and should have known words biased down. People with high hint to known ratio are new, and should have known words biased up to make stories easier (in the beginning at least, when total number of known words is low)
 - Llm Bias overhaul? Split bias words into sections:
   - Learning (10% of the words)
   - Known (90% of the words)
