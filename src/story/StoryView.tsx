@@ -7,6 +7,8 @@ import { StreamedState } from "@/util/StreamedState"
 import { ParsedStory } from "./ParsedStory"
 import { Button } from "@/components/ui/button"
 import { createStoryThunk } from "./createStoryThunk"
+import { TraditionalToggle } from "./TraditionalToggle"
+import { setLanguageAlternate } from "@/state/appSlice"
 
 interface Props {
   className?: string
@@ -61,10 +63,20 @@ function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
 
 function ParsedStoryView({ story }: { story: ParsedStory }) {
   const { parsedTitle, parsedContent } = story
+  const dispatch = useAppDispatch()
+  const languageAlternate = useAppState((state) => state.language.alternate)
 
   return (
     <>
-      <StoryLine line={parsedTitle} className={"mb-4 text-3xl"} />
+      <div className="flex mb-4 items-center">
+        <StoryLine line={parsedTitle} className={"text-3xl"} />
+        <div className="grow" />
+        <TraditionalToggle
+          isEnabled={languageAlternate ?? false}
+          onToggle={() => dispatch(setLanguageAlternate(!languageAlternate))}
+        />
+      </div>
+
       {parsedContent.map((line, index) => (
         <StoryLine key={index} line={line} />
       ))}
@@ -83,7 +95,7 @@ function StoryLine({
     <div className={cn("text-xl flex flex-wrap", className)}>
       {line.map((word) => {
         return NOT_WORDS.has(word.word) ? (
-          <SimpleWordView key={word.parsedId} word={word.word} />
+          <SimpleWordView key={word.parsedId} display={word.word} />
         ) : (
           <WordView key={word.parsedId} word={word} />
         )

@@ -6,12 +6,7 @@ import { HintView } from "./HintView"
 import { wrapClick } from "@/util/wrapClick"
 import { ParsedWord } from "./Story"
 import { cn } from "@/lib/utils"
-
-const className = "group p-1 rounded relative"
-
-export function SimpleWordView({ word }: { word: string }) {
-  return <span className={className}>{word}</span>
-}
+import { dict } from "@/dictionary/Dictionary"
 
 export function WordView({ word }: { word: ParsedWord }) {
   const hintLevel = useAppState((state) => {
@@ -21,29 +16,34 @@ export function WordView({ word }: { word: ParsedWord }) {
       return 0
     }
   })
-  const dispatch = useAppDispatch()
   const anchorRef = useRef<HTMLSpanElement | null>(null)
+  const dispatch = useAppDispatch()
+  const languageAlternate = useAppState((state) => state.language.alternate)
+  let displayWord: string = word.word
+  if (languageAlternate && dict.alternate(word.word)) {
+    const alternate = dict.alternate(word.word)
+    if (alternate) displayWord = alternate
+  }
+  const onClick = wrapClick((e) => {
+    dispatch(
+      hint({
+        word,
+      })
+    )
+  })
+
+  if (hintLevel === 0) {
+    return <SimpleWordView display={displayWord} onClick={onClick} />
+  }
 
   return (
-    <Popover.Root
-      open={hintLevel > 0}
-      // onOpenChange
-    >
+    <Popover.Root open={hintLevel > 0}>
       <Popover.Anchor asChild>
-        <span
+        <SimpleWordView
+          display={displayWord}
           ref={anchorRef}
-          onClick={wrapClick((e) => {
-            e.preventDefault()
-            dispatch(
-              hint({
-                word,
-              })
-            )
-          })}
-          className={cn(className)}
-        >
-          {word.word}
-        </span>
+          onClick={onClick}
+        />
       </Popover.Anchor>
 
       <Popover.Portal>
@@ -57,5 +57,25 @@ export function WordView({ word }: { word: ParsedWord }) {
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
+  )
+}
+
+export function SimpleWordView({
+  display,
+  ref,
+  onClick,
+}: {
+  display: string
+  ref?: React.Ref<HTMLSpanElement>
+  onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void
+}) {
+  return (
+    <span
+      ref={ref}
+      onClick={onClick}
+      className={cn("group p-1 rounded relative")}
+    >
+      {display}
+    </span>
   )
 }

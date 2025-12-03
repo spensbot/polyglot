@@ -1,4 +1,8 @@
 # Todos
+- Llm Bias overhaul? Split bias words into sections:
+  - Learning (10% of the words)
+  - Known (90% of the words)
+  - New (10% of the words)
 - allow section translation
 - traditional toggle
 - Service Worker
