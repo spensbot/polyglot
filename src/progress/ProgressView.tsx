@@ -63,25 +63,23 @@ export function ProgressView() {
           selected={selected}
           setSelected={setSelected}
         />
-        {/* <WordProgressGroup
+        <WordProgressGroup
           label="Familiar"
           description="Seen, but not known or learning"
           words={familiarWords(progress)}
           selected={selected}
           setSelected={setSelected}
           collapsedOnRender={true}
-        /> */}
+        />
         <WordProgressGroup
           label="Remaining"
-          description="Words not yet encountered"
+          description=""
           words={dict
             .allUnique()
             .filter((w) => {
               const word = w.simplified as Word
               const wp = progress.wordsSeen[word]
-              if (wp === undefined) return true
-              if (isKnown(wp) || isLearning(wp)) return false
-              return true
+              return wp === undefined
             })
             .map((w) => ({
               word: w.simplified as Word,

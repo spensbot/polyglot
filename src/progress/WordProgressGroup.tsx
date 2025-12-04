@@ -42,6 +42,7 @@ export function WordProgressGroup({
           {Array.from(wordsByRarity.entries()).map(([rarity, words]) => {
             return (
               <WordFrequencyGroup
+                key={rarity}
                 rarity={rarity}
                 words={words}
                 selected={selected}

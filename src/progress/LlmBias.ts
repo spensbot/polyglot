@@ -10,7 +10,7 @@ import { AppState } from "@/state/appSlice";
 export type LlmBias = Record<Word, number>;
 
 /** Combines multiple LlmBias objects into one by summing their values */
-function combinedBias(biases: LlmBias[]): LlmBias {
+export function combinedBias(biases: LlmBias[]): LlmBias {
   const result: LlmBias = {};
 
   for (const biasObj of biases) {
@@ -30,17 +30,15 @@ function combinedBias(biases: LlmBias[]): LlmBias {
 /** Increases the likelihood of more common words being chosen
  * From (0.0 to 1.0) with the most frequent word having bias 2.0
  */
-function llmBias_frequency(): LlmBias {
-  const MAX_BIAS = 1.0 // The bias of the #1 most frequent word
-  const NO_BIAS_RANKING = 3000 // Where the bias becomes 0.0
-  const slope = - MAX_BIAS / NO_BIAS_RANKING
+export function llmBias_frequency(maxBias: number = 1.0, noBiasRanking: number = 5000): LlmBias {
+  const slope = - maxBias / noBiasRanking
 
   const llmBias: LlmBias = {}
 
-  dict.all().forEach(entry => {
+  dict.allUnique().forEach(entry => {
     const rank = entry.frequencyRanking
     if (rank !== null) {
-      llmBias[entry.simplified as Word] = Math.max(0.0, MAX_BIAS + slope * rank)
+      llmBias[entry.simplified as Word] = Math.max(0.0, maxBias + slope * rank)
     }
   })
 
@@ -48,7 +46,7 @@ function llmBias_frequency(): LlmBias {
 }
 
 /** Decreases the likelihood of recently seen words being chosen */
-function llmBias_recency(state: AppState): LlmBias {
+export function llmBias_recency(state: AppState): LlmBias {
   const history = state.pastStories
   const recentStories = history.slice(-3).map(s => state.storiesById[s.storyId]).filter(s => s.status === 'success').map(s => s.val)
   const nStories = recentStories.length

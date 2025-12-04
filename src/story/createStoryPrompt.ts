@@ -1,13 +1,12 @@
 import { infoSection } from '@/util/llm/promptUtil'
 import { knownWords } from '@/progress/Progress'
-import { printBiasForLlm, totalLlmBias } from '@/progress/LlmBias'
 import { computeLevel, Level } from '@/progress/Level'
 import { AppState } from '@/state/appSlice'
+import { printPreferredWordsByBucket } from '@/progress/preferredWordsByBucket'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
 export function createStoryPrompt(appState: AppState): string {
-  const llmBias = totalLlmBias(appState)
   const level = computeLevel(knownWords(appState.progress).length)
 
   return `
@@ -23,7 +22,9 @@ Important Requirements:
 
 ${infoSection(`Here's an overview of the user's language level. The story MUST be appropriate for this level`, `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
 
-${infoSection('Favored Words With Weight. Prefer to include these words in the story based on the factor.', printBiasForLlm(llmBias, 200))}
+${infoSection(`The story must prioritize the following vocabulary words.
+This list is ordered from highest priority (1) to lowest priority (N).
+Try to use as many of the highest-priority words as possible, without breaking natural grammar`, printPreferredWordsByBucket(appState, 200))}
 `
 }
 

@@ -6,7 +6,6 @@ describe("computeLevel", () => {
     const info = computeLevel(0);
     expect(info).toStrictEqual({
       level: "Beginner",
-      nKnownWords: 0,
       progressToNext: 0
     })
   });
@@ -17,7 +16,6 @@ describe("computeLevel", () => {
       const info = computeLevel(n);
       expect(info).toStrictEqual({
         level: LEVELS[i + 1],
-        nKnownWords: n,
         progressToNext: 0
       })
     });
@@ -31,7 +29,6 @@ describe("computeLevel", () => {
     const info = computeLevel(n);
     expect(info).toStrictEqual({
       level: "Emerging",
-      nKnownWords: n,
       progressToNext: 0.5
     })
   });

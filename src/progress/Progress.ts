@@ -79,3 +79,16 @@ export const learningWords = (progress: Progress) => seenWords(progress).filter(
 
 /** Words that have been seen, but aren't known or being learned */
 export const familiarWords = (progress: Progress) => seenWords(progress).filter((w) => !isLearning(w) && !isKnown(w));
+
+/** A key indicator for tuning the learning curve
+ * 
+ * A high ratio means they're asking for a hint on every word they see.
+ * 
+ * A low ratio means they don't need any hints
+ */
+export const learningToSeenRatio = (progress: Progress): number => {
+  const nSeen = seenWords(progress).length
+  if (nSeen === 0) return 0
+  const nLearning = learningWords(progress).length
+  return nLearning / nSeen
+}
