@@ -21,9 +21,7 @@ export function StoryView({ className }: Props) {
   if (!story) return null
 
   return (
-    <div
-      className={cn(className, "select-none flex flex-col gap-0 text-white/80")}
-    >
+    <div className={cn(className, "flex flex-col gap-0 text-white/80")}>
       <StreamedStoryView story={story} />
     </div>
   )
@@ -95,7 +93,7 @@ function StoryLine({
     <div className={cn("text-xl flex flex-wrap", className)}>
       {line.map((word) => {
         return NOT_WORDS.has(word.word) ? (
-          <SimpleWordView key={word.parsedId} display={word.word} />
+          <SimpleWordView key={word.parsedId} display={word.word} noPadding />
         ) : (
           <WordView key={word.parsedId} word={word} />
         )

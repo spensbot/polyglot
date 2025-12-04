@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { knownWords, learningWords } from "./Progress"
 import { computeLevel } from "./Level"
-import { useAppDispatch, useAppState } from "@/state/hooks"
+import { useAppState } from "@/state/hooks"
 import { ProgressBar } from "@/components/ProgressBar"
 
 interface Props {
@@ -19,7 +19,7 @@ export function ProgressOverview({ className }: Props) {
         <p className="text-3xl">{level.level}</p>
       </div>
       <div className="h-5" />
-      <ProgressBar percent={level.progressToNext * 100} height="1rem" />
+      <ProgressBar percent={level.progressToNext * 100} className="min-h-4" />
       <p className="opacity-50">{nKnownWords} known words</p>
       <div className="h-2" />
       <div>

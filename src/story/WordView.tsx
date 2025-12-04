@@ -64,16 +64,21 @@ export function SimpleWordView({
   display,
   ref,
   onClick,
+  noPadding,
 }: {
   display: string
   ref?: React.Ref<HTMLSpanElement>
   onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void
+  noPadding?: boolean
 }) {
   return (
     <span
       ref={ref}
       onClick={onClick}
-      className={cn("group p-1 rounded relative")}
+      className={cn(
+        "group py-1 rounded relative",
+        noPadding ? "-px-1" : "px-1"
+      )}
     >
       {display}
     </span>

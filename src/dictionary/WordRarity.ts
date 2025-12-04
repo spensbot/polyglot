@@ -9,36 +9,44 @@ export const WORD_RARITY_LIST = ['Foundational', 'Essential', 'Core', 'Useful', 
 export type WordRarity = typeof WORD_RARITY_LIST[number];
 
 interface WordRarityInfo {
+  color: string
   className: string
   rankingThreshold: number
 }
 
 const WORD_RARITY_INFO: Record<WordRarity, WordRarityInfo> = {
   'Foundational': {
+    color: '#FACC15',
     className: 'text-[#FACC15] drop-shadow-[0_0_8px_rgba(250,204,21,1.0)] animate-pulse',
     rankingThreshold: 100
   }, // Yellow with strong glow/pulse
   'Essential': {
+    color: `#D4AF37`,
     className: 'text-[#D4AF37] drop-shadow-[0_0_12px_rgba(212,175,55,1.0)]',
     rankingThreshold: 500
   }, // Gold with medium glow
   'Core': {
+    color: '#8B5CF6',
     className: 'text-[#8B5CF6] drop-shadow-[0_0_8px_rgba(139,92,246,1.0)]',
     rankingThreshold: 1000
   }, // Purple with medium glow
   'Useful': {
+    color: '#3B82F6',
     className: 'text-[#3B82F6]',
     rankingThreshold: 2000
   }, // Blue
   'Specialized': {
+    color: '#5a6',
     className: 'text-[#5a6]',
     rankingThreshold: 5000
   }, // Green
   'Niche': {
+    color: '#6B8E72',
     className: 'text-[#6B8E72]',
     rankingThreshold: 10000
   }, // Gray-green
   'Esoteric': {
+    color: '#9CA3AF',
     className: 'text-[#9CA3AF]',
     rankingThreshold: Infinity
   }, // Gray
@@ -53,6 +61,6 @@ export function getRarity(ranking: number): WordRarity {
   return 'Esoteric'; // Fallback, should not reach here
 }
 
-export function getClassName(rarity: WordRarity): string {
-  return WORD_RARITY_INFO[rarity].className;
+export function getInfo(rarity: WordRarity): WordRarityInfo {
+  return WORD_RARITY_INFO[rarity];
 }

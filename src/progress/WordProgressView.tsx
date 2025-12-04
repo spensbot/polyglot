@@ -2,30 +2,33 @@ import { Popover } from "radix-ui"
 import { WordProgress } from "./Progress"
 import { cn } from "@/lib/utils"
 import { HintView } from "@/story/HintView"
+import { wrapClick } from "@/util/wrapClick"
 
 interface Props {
-  wordProgress: WordProgress
+  word: WordProgress
   selected: boolean
-  onMouseEnter: () => void
-  onMouseLeave: () => void
+  setSelected: (word: WordProgress | null) => void
   className?: string
 }
 
 export function WordProgressView({
-  wordProgress,
+  word,
   selected,
-  onMouseEnter,
-  onMouseLeave,
+  setSelected,
   className,
 }: Props) {
+  const onClick = wrapClick(() => {
+    if (selected) {
+      setSelected(null)
+    } else {
+      setSelected(word)
+    }
+  })
+
   if (!selected) {
     return (
-      <span
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        className={cn(className)}
-      >
-        {wordProgress.word}
+      <span onClick={onClick} className={cn(className)}>
+        {word.word}
       </span>
     )
   }
@@ -33,12 +36,8 @@ export function WordProgressView({
   return (
     <Popover.Root open={selected}>
       <Popover.Anchor asChild>
-        <span
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          className={cn(className)}
-        >
-          {wordProgress.word}
+        <span onClick={onClick} className={cn(className)}>
+          {word.word}
         </span>
       </Popover.Anchor>
 
@@ -48,8 +47,8 @@ export function WordProgressView({
           collisionPadding={20}
           className="focus:outline-none"
         >
-          <HintView word={wordProgress.word} />
-          <Popover.Arrow className="fill-gray-300" width={15} height={8} />
+          <HintView word={word.word} />
+          <Popover.Arrow className="fill-neutral-700" width={15} height={8} />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

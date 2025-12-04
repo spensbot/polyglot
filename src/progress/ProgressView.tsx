@@ -12,8 +12,7 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { WordProgressGroup } from "./WordProgressGroup"
 import { Button } from "@/components/ui/button"
 import { resetState } from "@/state/store"
-import { dict } from "@/dictionary/Dictionary"
-import { Word } from "@/dictionary/Word"
+import { wrapClick } from "@/util/wrapClick"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
@@ -23,7 +22,10 @@ export function ProgressView() {
   const dispatch = useAppDispatch()
 
   return (
-    <div className="w-full h-full flex justify-center items-stretch">
+    <div
+      className="w-full h-full flex justify-center items-stretch"
+      onClick={wrapClick(() => setSelected(null))}
+    >
       <div className="flex flex-col p-4 gap-4 overflow-scroll w-3xl">
         <div>
           <div className="flex gap-2 items-baseline">
@@ -42,7 +44,7 @@ export function ProgressView() {
             />
           </div>
         </div>
-        <ProgressBar percent={level.progressToNext * 100} height="1rem" />
+        <ProgressBar percent={level.progressToNext * 100} className="min-h-4" />
         <WordProgressGroup
           label="Learning"
           description="Recently hinted"

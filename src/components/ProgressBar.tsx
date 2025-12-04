@@ -1,12 +1,14 @@
+import { cn } from "@/lib/utils"
+
 export function ProgressBar({
   percent,
-  height,
+  className,
 }: {
   percent: number
-  height: string
+  className?: string
 }) {
   return (
-    <div className="bg-white/10 relative" style={{ height: height }}>
+    <div className={cn("bg-white/10 relative", className)}>
       <div
         className="bg-blue-500 absolute top-0 left-0 bottom-0"
         style={{
