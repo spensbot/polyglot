@@ -17,12 +17,12 @@ interface WordRarityInfo {
 const WORD_RARITY_INFO: Record<WordRarity, WordRarityInfo> = {
   'Foundational': {
     color: '#FACC15',
-    className: 'text-[#FACC15] drop-shadow-[0_0_8px_rgba(250,204,21,1.0)] animate-pulse',
+    className: 'text-[#FACC15] drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]',
     rankingThreshold: 100
   }, // Yellow with strong glow/pulse
   'Essential': {
     color: `#D4AF37`,
-    className: 'text-[#D4AF37] drop-shadow-[0_0_12px_rgba(212,175,55,1.0)]',
+    className: 'text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]',
     rankingThreshold: 500
   }, // Gold with medium glow
   'Core': {

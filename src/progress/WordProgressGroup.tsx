@@ -38,7 +38,7 @@ export function WordProgressGroup({
         <span className="text-sm opacity-50">{description}</span>
       </div>
       {!collapsed && (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {Array.from(wordsByRarity.entries()).map(([rarity, words]) => {
             return (
               <WordFrequencyGroup
@@ -46,6 +46,7 @@ export function WordProgressGroup({
                 words={words}
                 selected={selected}
                 setSelected={setSelected}
+                collapsedOnRender={words.length > 15}
               />
             )
           })}
@@ -60,48 +61,40 @@ function WordFrequencyGroup({
   words,
   selected,
   setSelected,
+  collapsedOnRender,
 }: {
   rarity: WordRarity
   words: WordProgress[]
   selected: WordProgress | null
   setSelected: (word: WordProgress | null) => void
+  collapsedOnRender?: boolean
 }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(collapsedOnRender ?? false)
 
   return (
-    <div className="flex flex-col gap-2 pl-6">
-      <div
-        className={cn(
-          "flex items-center w-full gap-2",
-          getInfo(rarity).className
+    <div className="flex flex-col pl-6">
+      <div className={cn("flex flex-wrap gap-x-2 gap-y-1 items-center")}>
+        <h4
+          onClick={() => setCollapsed(!collapsed)}
+          className={cn("text-lg p-1 -m-1", getInfo(rarity).className)}
+        >
+          {rarity}
+        </h4>
+        <span className="text-sm opacity-50">{`(${words.length})`}</span>
+        {!collapsed && (
+          <>
+            {words.map((w) => (
+              <WordProgressView
+                key={w.word}
+                word={w}
+                selected={selected?.word === w.word}
+                setSelected={setSelected}
+                className={cn("p-1 -m-1 text-xl text-white/60")}
+              />
+            ))}
+          </>
         )}
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        {/* <DropdownIndicator collapsed={collapsed} /> */}
-        <h4 className="text-lg">{rarity}</h4>
-        <p>{}</p>
-        <div
-          className="h-px bg-white grow"
-          style={{ backgroundColor: getInfo(rarity).color }}
-        />
       </div>
-      {!collapsed && (
-        <div className="flex flex-wrap gap-x-2 gap-y-1">
-          {words.map((w) => (
-            <WordProgressView
-              key={w.word}
-              word={w}
-              selected={selected?.word === w.word}
-              setSelected={setSelected}
-              className={cn("p-1 -m-1 text-xl text-white/80")}
-            />
-          ))}
-        </div>
-      )}
-      {/* <div
-        className="h-px bg-white grow"
-        style={{ backgroundColor: getInfo(rarity).color }}
-      /> */}
     </div>
   )
 }

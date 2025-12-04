@@ -1,6 +1,8 @@
 import { useAppDispatch, useAppState } from "@/state/hooks"
 import {
   familiarWords,
+  isKnown,
+  isLearning,
   KNOWN_THRESHOLD,
   knownWords,
   learningWords,
@@ -13,6 +15,8 @@ import { WordProgressGroup } from "./WordProgressGroup"
 import { Button } from "@/components/ui/button"
 import { resetState } from "@/state/store"
 import { wrapClick } from "@/util/wrapClick"
+import { dict } from "@/dictionary/Dictionary"
+import { Word } from "@/dictionary/Word"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
@@ -59,20 +63,26 @@ export function ProgressView() {
           selected={selected}
           setSelected={setSelected}
         />
-        <WordProgressGroup
+        {/* <WordProgressGroup
           label="Familiar"
           description="Seen, but not known or learning"
           words={familiarWords(progress)}
           selected={selected}
           setSelected={setSelected}
           collapsedOnRender={true}
-        />
-        {/* <WordProgressGroup
-          label="Unseen"
+        /> */}
+        <WordProgressGroup
+          label="Remaining"
           description="Words not yet encountered"
           words={dict
             .allUnique()
-            .filter((w) => !progress.wordsSeen[w.simplified as Word])
+            .filter((w) => {
+              const word = w.simplified as Word
+              const wp = progress.wordsSeen[word]
+              if (wp === undefined) return true
+              if (isKnown(wp) || isLearning(wp)) return false
+              return true
+            })
             .map((w) => ({
               word: w.simplified as Word,
               nSeen: 0,
@@ -81,7 +91,7 @@ export function ProgressView() {
           selected={selected}
           setSelected={setSelected}
           collapsedOnRender={true}
-        /> */}
+        />
       </div>
     </div>
   )

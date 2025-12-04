@@ -13,7 +13,6 @@ export function HintView({ word, depth = 2 }: Props) {
   const definition = dict.define(word)
   const pinyin = dict.pinyin(word)
   const frequencyRanking = dict.frequncyRanking(word)
-  const { nSeen, nHints } = useAppState((s) => s.progress.wordsSeen[word])
 
   const chars = word.split("")
 
@@ -49,7 +48,6 @@ export function HintView({ word, depth = 2 }: Props) {
               </div>
             </>
           )}
-          {/* <span className="text-sm opacity-50">{`seen ${nSeen}x, ${nHints} hints`}</span> */}
         </>
       )}
     </div>
