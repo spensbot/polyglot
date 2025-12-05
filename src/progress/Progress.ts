@@ -10,7 +10,7 @@ export const WordProgressSchema = z.object({
   nSeen: z.number(),
   nHints: z.number(),
   nSeenSinceLastHint: z.number().optional(),
-  hintedThisStory: z.boolean().optional(),
+  nStoriesSinceLastHint: z.number().optional(),
 })
 export type WordProgress = z.infer<typeof WordProgressSchema>;
 export function getOrCreateWordStats(wordsSeen: Record<Word, WordProgress>, word: Word): WordProgress {
@@ -28,16 +28,18 @@ export function getOrCreateWordStats(wordsSeen: Record<Word, WordProgress>, word
 export function updateHint(word: WordProgress) {
   word.nHints += 1
   word.nSeenSinceLastHint = 0
-  word.hintedThisStory = true
+  word.nStoriesSinceLastHint = 0
 }
 
 /** After the story */
 function updateSeen(word: WordProgress, count: number) {
   word.nSeen += count;
-  if (!word.hintedThisStory && word.nSeenSinceLastHint !== undefined) {
+  if (word.nStoriesSinceLastHint !== 0 && word.nSeenSinceLastHint !== undefined) {
     word.nSeenSinceLastHint += count
   }
-  delete word.hintedThisStory
+  if (word.nStoriesSinceLastHint !== undefined) {
+    word.nStoriesSinceLastHint += 1
+  }
 }
 
 export function updateProgressForCompletedStory(progress: Progress, words: Word[]) {

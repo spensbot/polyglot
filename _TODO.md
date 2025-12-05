@@ -3,6 +3,8 @@
 - Add a nStoriesSinceLastHint field (for tracking recent learning / seen ratio).
 - Print lts ratio, bucket weights, % of story by bucket, other debug info, in debug tab
 - Parametrize target story length. Limit the number of recommended words to that length.
+
+# Future/Maybe
 - allow section translation
 - Service Worker
 - Clickable history items (for re-reading/re-summarizing)

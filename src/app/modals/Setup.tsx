@@ -19,7 +19,7 @@ function Setup() {
     <div className="flex flex-col gap-2 w-150 max-w-full">
       <div className="flex justify-between">
         <p className="-mb-1">Tutorial</p>
-        <p className="text-sm opacity-50">v1.0.0</p>
+        <p className="text-sm opacity-50">v1.0.1</p>
       </div>
       <ul className="bg-neutral-900 rounded-sm text-sm p-2 flex flex-col gap-1 list-disc list-inside">
         <li>Click a word once to see the pinyin</li>
