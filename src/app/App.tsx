@@ -9,6 +9,7 @@ import { HistoryView } from "@/progress/HistoryView"
 import { MenuBar } from "./MenuBar"
 import "@/dictionary/Dictionary" // Ensure dictionary is loaded
 import { ModalsView } from "./ModalView"
+import { DebugView } from "./DebugView"
 
 function App() {
   const dispatch = useAppDispatch()
@@ -27,6 +28,7 @@ function App() {
         {nav === "Home" && <Home />}
         {nav === "Progress" && <ProgressView />}
         {nav === "History" && <HistoryView />}
+        {nav === "Debug" && <DebugView />}
       </div>
       <MenuBar className="bg-neutral-800 pointer-events-auto " />
       <ModalsView />

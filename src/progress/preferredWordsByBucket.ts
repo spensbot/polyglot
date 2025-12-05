@@ -1,11 +1,12 @@
 import { AppState } from "@/state/appSlice";
 import { lerp } from "@/util/math";
-import { isKnown, isLearning, knownWords, learningToSeenRatio, learningWords, seenWords } from "./Progress";
+import { buckets, learningToSeenRatio, unseenWords } from "./Progress";
 import { combinedBias, llmBias_frequency, llmBias_recency } from "./LlmBias";
-import { dict } from "@/dictionary/Dictionary";
 import { Word } from "@/dictionary/Word";
 import { distributeByWeight } from "@/util/math/distributeByWeight";
 import { Log } from "@/util/Log";
+
+export const PREFERRED_WORDS_LIMIT = 200;
 
 interface BucketWeights {
   learning: number;
@@ -45,7 +46,7 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
  * Sorting them based on frequency and recency
  * And distributing them according to the user's learning / seen ratio
  */
-function preferredWordsByBucket(state: AppState): Word[] {
+export function preferredWordsByBucket(state: AppState): Word[] {
   const { progress } = state
   const ltsRatio = learningToSeenRatio(progress)
   const bucketWeights = lerpWeights(minLtsBucketWeights, maxLtsBucketWeights, ltsRatio)
@@ -59,31 +60,31 @@ function preferredWordsByBucket(state: AppState): Word[] {
   ])
   const cmp = getCompareFunction(llmBias)
 
-  const learning = learningWords(progress).map(w => w.word).sort(cmp)
-  const known = knownWords(progress).map(w => w.word).sort(cmp)
-  const familiar = seenWords(progress).filter(w => !isKnown(w) && !isLearning(w)).map(w => w.word).sort(cmp)
-  const unseen = dict.allUnique()
-    .map(e => e.simplified as Word)
-    .filter(w => progress.wordsSeen[w] === undefined).sort(cmp)
+  let { learning, known, familiar } = buckets(progress)
+
+  const learningWords = learning.map(w => w.word).sort(cmp)
+  const knownWords = known.map(w => w.word).sort(cmp)
+  const familiarWords = familiar.map(w => w.word).sort(cmp)
+  const unseenWords_ = unseenWords(progress).sort(cmp)
 
   Log.info(`Sorted Learning`, learning)
   Log.info(`Sorted Known`, known)
   Log.info(`Sorted Familiar`, familiar)
 
   const words = distributeByWeight<Word>([
-    { items: learning, weight: bucketWeights.learning },
-    { items: known, weight: bucketWeights.known },
-    { items: familiar, weight: bucketWeights.familiar },
-    { items: unseen, weight: bucketWeights.unseen },
+    { items: learningWords, weight: bucketWeights.learning },
+    { items: knownWords, weight: bucketWeights.known },
+    { items: familiarWords, weight: bucketWeights.familiar },
+    { items: unseenWords_, weight: bucketWeights.unseen },
   ])
 
-  return words
+  return words.slice(0, PREFERRED_WORDS_LIMIT)
 }
 
-export function printPreferredWordsByBucket(state: AppState, limit: number): string {
+export function printPreferredWordsByBucket(state: AppState): string {
   const words = preferredWordsByBucket(state)
-  return words.slice(0, limit)
-    .map((w, i) => `${i + 1}. ${w}${i === 0 ? " (highest priority)" : ""}${i === limit - 1 ? " (lowest priority)" : ""}`)
+  const n = words.length
+  return words.map((w, i) => `${i + 1}. ${w}${i === 0 ? " (highest priority)" : ""}${i === n - 1 ? " (lowest priority)" : ""}`)
     .join("\n")
 }
 

@@ -2,7 +2,12 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { navigate, setModal } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
-import { BookOpen, ChartNoAxesColumnIncreasing, History } from "lucide-react"
+import {
+  BookOpen,
+  Bug,
+  ChartNoAxesColumnIncreasing,
+  History,
+} from "lucide-react"
 
 const SETUP_LABEL = "Setup"
 
@@ -33,10 +38,13 @@ export function MenuBar({ className }: { className?: string }) {
         onClick={() => dispatch(navigate("Progress"))}
         active={nav === "Progress"}
       />
-      {/* <MenuItem
-        icon={<GraduationCap />}
-        onClick={() => dispatch(navigate("Progress"))}
-      /> */}
+      {import.meta.env.DEV && (
+        <MenuItem
+          icon={<Bug className="text-fuchsia-400" />}
+          onClick={() => dispatch(navigate("Debug"))}
+          active={nav === "Debug"}
+        />
+      )}
       <div className="flex-1" />
       <Button
         label={SETUP_LABEL}

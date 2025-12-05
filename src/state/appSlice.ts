@@ -11,7 +11,7 @@ import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
 
-const NavSchema = z.literal(['Home', 'Progress', 'History'])
+const NavSchema = z.literal(['Home', 'Progress', 'History', 'Debug'])
 export type Nav = z.infer<typeof NavSchema>
 
 const ModalSchema = z.literal(['Setup', 'PostStory'])
