@@ -1,46 +1,56 @@
 import { cn } from "@/lib/utils"
-import { learningToSeenRatio } from "@/progress/Progress"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 import { WordBucketStats } from "./WordBucketStats"
 import { WordFrequencyStats } from "./WordFrequencyStats"
 import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
+import { WordOverview } from "./WordOverview"
+import {
+  hintToSeenRatio_recent,
+  RECENT_STORIES_THRESHOLD,
+} from "@/progress/hintToSeenRatio"
 
 export function DebugView() {
-  const ltsRatio = useAppState((s) => learningToSeenRatio(s.progress))
+  const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
   const app = useAppState((s) => s)
 
   const preferredWords = preferredWordsByBucket(app)
   const storyWords = useCurrentStory((s) =>
     s.status === "success" ? s.val.parsedAll.map((w) => w.word) : []
   )
-  const nStory = storyWords.length
-  const nUnique = new Set(storyWords).size
+  const storySet = new Set(storyWords)
 
-  const nPreferredInStory = storyWords.filter((w) =>
-    preferredWords.includes(w)
-  ).length
+  const statsClassName = "bg-neutral-800 rounded p-2 -mx-2 max-w-150"
 
   return (
     <div
       className={cn("w-full h-full overflow-scroll", "flex flex-col gap-4 p-4")}
     >
       <h2 className="text-2xl">Debug View</h2>
-      <Item text="Learning to Seen Ratio:" value={ltsRatio.toFixed(2)} />
-      <WordBucketStats />
-      <WordFrequencyStats />
+      <Item
+        text={`Hint to Seen Ratio (last ${RECENT_STORIES_THRESHOLD} stories):`}
+        value={hsRatio.toFixed(2)}
+      />
+      <WordOverview className={statsClassName} />
+      <WordBucketStats className={statsClassName} />
+      <WordFrequencyStats className={statsClassName} />
       <h3 className="-mb-2">
-        Story Words{" "}
-        <span className="text-sm opacity-50">
-          ({nStory} total / {nUnique} unique)
-        </span>
+        Preferred <span className="opacity-50">{`(as sent to llm)`}</span>
       </h3>
-      <h3 className="-mb-2">
-        Preferred{" "}
-        <span className="text-sm opacity-50">
-          ({preferredWords.length}) In Story ({nPreferredInStory})
-        </span>
-      </h3>
-      <p className="opacity-50">{preferredWords.join(", ")}</p>
+      <div className="flex flex-wrap">
+        {preferredWords.map((w) => {
+          return (
+            <p
+              key={w}
+              className={cn(
+                storySet.has(w) ? "text-amber-200" : "opacity-50",
+                "mr-2"
+              )}
+            >
+              {w}
+            </p>
+          )
+        })}
+      </div>
     </div>
   )
 }

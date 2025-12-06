@@ -11,15 +11,16 @@ import {
   WordRarity,
   WORD_RARITY_LIST,
 } from "@/dictionary/WordRarity"
+import { cn } from "@/lib/utils"
 import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 import { getOrCreate } from "@/util/collectionUtil"
 
-export function WordFrequencyStats() {
+export function WordFrequencyStats({ className }: { className?: string }) {
   const app = useAppState((s) => s)
   const story = useCurrentStory((s) => s)
 
-  if (story.status !== "success") return null
+  if (story.status !== "success") return "Words By Frequency: Story Not Loaded"
 
   const allEntries = WORD_RARITY_LIST.map((rarity) => {
     return {
@@ -58,18 +59,12 @@ export function WordFrequencyStats() {
   ).length
 
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className="-mb-2">Words By Frequency</h3>
-      <StackedBarChart
-        title={`Preferred (${preferredWords.length}) In Story (${nPreferredInStory})`}
-        entries={preferredEntries}
-      />
-      <StackedBarChart
-        title={`In Story (${story.val.parsedAll.length}) (${nUnique} unique)`}
-        entries={storyEntries}
-      />
+    <div className={cn("flex flex-col gap-2", className)}>
+      <h3 className="">Words By Frequency</h3>
+      <StackedBarChart title={`Preferred`} entries={preferredEntries} />
+      <StackedBarChart title={`In Story`} entries={storyEntries} />
 
-      <StackedBarChartLegend entries={allEntries} />
+      <StackedBarChartLegend entries={allEntries.slice(0, -1)} />
     </div>
   )
 }

@@ -4,25 +4,21 @@ import {
   StackedBarEntry,
 } from "@/components/StackedBarChart"
 import { Word } from "@/dictionary/Word"
+import { cn } from "@/lib/utils"
+import { hintToSeenRatio_recent } from "@/progress/hintToSeenRatio"
 import {
   preferredWordsByBucket,
   targetBucketWeights,
 } from "@/progress/preferredWordsByBucket"
-import {
-  buckets,
-  isKnown,
-  isLearning,
-  learningToSeenRatio,
-  Progress,
-} from "@/progress/Progress"
+import { buckets, isKnown, isLearning, Progress } from "@/progress/Progress"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 
-export function WordBucketStats() {
+export function WordBucketStats({ className }: { className?: string }) {
   const app = useAppState((s) => s)
   const progressBuckets = buckets(app.progress)
   const story = useCurrentStory((s) => s)
-  const ltsRatio = useAppState((s) => learningToSeenRatio(s.progress))
-  const targetWeights = targetBucketWeights(ltsRatio)
+  const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
+  const targetWeights = targetBucketWeights(hsRatio)
 
   const colorByBucket: Record<string, string> = {
     learning: "#f59e0b",
@@ -70,24 +66,16 @@ export function WordBucketStats() {
     })
   )
 
-  const nUnique = new Set(storyWords.map((w) => w.word)).size
-  const nPreferredInStory = storyWords.filter((w) =>
-    preferredWords.includes(w.word)
-  ).length
-
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className="-mb-2">Words By User Bucket</h3>
-      <StackedBarChart title="Progress" entries={progressEntries} />
-      <StackedBarChart title="Target (based on LTS)" entries={targetEntries} />
+    <div className={cn("flex flex-col gap-2", className)}>
+      <h3 className="">Words By User Bucket</h3>
+      <StackedBarChart title="User Status" entries={progressEntries} />
       <StackedBarChart
-        title={`Preferred (${preferredWords.length}) In Story (${nPreferredInStory})`}
-        entries={preferredEntries}
+        title="Target (based on LS Ratio)"
+        entries={targetEntries}
       />
-      <StackedBarChart
-        title={`In Story (${storyWords.length}) (${nUnique} unique)`}
-        entries={storyEntries}
-      />
+      <StackedBarChart title={`Preferred`} entries={preferredEntries} />
+      <StackedBarChart title={`In Story`} entries={storyEntries} />
 
       <StackedBarChartLegend entries={storyEntries} />
     </div>
