@@ -36,7 +36,7 @@ export const AppStateSchema = z.object({
   pastStories: z.array(StoryEvalSchema),
   secrets: SecretsSchema,
   modal: ModalSchema.nullable().default(null),
-  debug: DebugSchema
+  debug: DebugSchema.default({ debugMode: false }),
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
