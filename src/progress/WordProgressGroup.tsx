@@ -14,6 +14,7 @@ export function WordProgressGroup({
   selected,
   setSelected,
   collapsedOnRender,
+  className,
 }: {
   label: string
   description?: string
@@ -21,24 +22,30 @@ export function WordProgressGroup({
   selected: WordProgress | null
   setSelected: (word: WordProgress | null) => void
   collapsedOnRender?: boolean
+  className?: string
 }) {
   const [collapsed, setCollapsed] = useState(collapsedOnRender ?? false)
 
   const wordsByRarity = getWordsByRarity(words)
 
   return (
-    <div>
+    <div
+      className={cn(
+        "bg-neutral-800 p-2 -mx-2 rounded flex flex-col gap-2",
+        className
+      )}
+    >
       <div
-        className="text-xl mb-2 flex items-baseline gap-2 cursor-pointer"
+        className="text-xl flex items-baseline gap-2 cursor-pointer"
         onClick={() => setCollapsed(!collapsed)}
       >
-        <DropdownIndicator collapsed={collapsed} />
+        {/* <DropdownIndicator collapsed={collapsed} /> */}
         {label}
         <span className="text-sm opacity-50">({words.length})</span>
         <span className="text-sm opacity-50">{description}</span>
       </div>
       {!collapsed && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pl-2">
           {Array.from(wordsByRarity.entries()).map(([rarity, words]) => {
             return (
               <WordFrequencyGroup
@@ -73,7 +80,7 @@ function WordFrequencyGroup({
   const [collapsed, setCollapsed] = useState(collapsedOnRender ?? false)
 
   return (
-    <div className="flex flex-col pl-6">
+    <div className="flex flex-col">
       <div className={cn("flex flex-wrap gap-x-2 gap-y-1 items-center")}>
         <h4
           onClick={() => setCollapsed(!collapsed)}

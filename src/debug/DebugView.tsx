@@ -23,7 +23,10 @@ export function DebugView() {
 
   return (
     <div
-      className={cn("w-full h-full overflow-scroll", "flex flex-col gap-4 p-4")}
+      className={cn(
+        "w-full h-full overflow-y-scroll overflow-x-hidden",
+        "flex flex-col gap-4 p-4"
+      )}
     >
       <h2 className="text-2xl">Debug View</h2>
       <Item

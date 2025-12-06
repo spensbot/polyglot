@@ -29,7 +29,7 @@ export function ProgressView() {
       className="w-full h-full flex justify-center items-stretch"
       onClick={wrapClick(() => setSelected(null))}
     >
-      <div className="flex flex-col p-4 gap-4 overflow-scroll w-3xl">
+      <div className="flex flex-col p-4 gap-4 overflow-y-scroll overflow-x-hidden w-3xl">
         <div>
           <div className="flex gap-2 items-baseline">
             <p className="text-3xl">{level.level}</p>
