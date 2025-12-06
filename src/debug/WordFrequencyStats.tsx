@@ -21,6 +21,14 @@ export function WordFrequencyStats() {
 
   if (story.status !== "success") return null
 
+  const allEntries = WORD_RARITY_LIST.map((rarity) => {
+    return {
+      label: rarity,
+      color: rarityInfo(rarity).color,
+      weight: 0,
+    }
+  })
+
   const preferredWords = preferredWordsByBucket(app)
   const preferredBuckets = freqBuckets(preferredWords)
   const preferredEntries: StackedBarEntry[] = WORD_RARITY_LIST.map((rarity) => {
@@ -61,7 +69,7 @@ export function WordFrequencyStats() {
         entries={storyEntries}
       />
 
-      <StackedBarChartLegend entries={preferredEntries} />
+      <StackedBarChartLegend entries={allEntries} />
     </div>
   )
 }

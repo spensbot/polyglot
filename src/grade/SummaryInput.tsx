@@ -8,10 +8,19 @@ import {
 } from "./gradeSummaryThunk"
 import { AArrowUp, ArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useEffect, useRef } from "react"
 
 export function SummaryInput({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
   const { summary } = useAppState((s) => s.currentStory)
+  const ref = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.height = "auto"
+      ref.current.style.height = `${ref.current.scrollHeight}px`
+    }
+  }, [summary])
 
   return (
     <div
@@ -22,16 +31,14 @@ export function SummaryInput({ className }: { className?: string }) {
       )}
     >
       <Textarea
+        ref={ref}
         placeholder="Summarize The Story"
         value={summary}
-        onChange={(e) => dispatch(setSummary(e.target.value))}
+        onChange={(e) => {
+          dispatch(setSummary(e.target.value))
+        }}
         className="border-none resize-none"
         rows={1}
-        onInput={(e) => {
-          const el = e.currentTarget
-          el.style.height = "auto"
-          el.style.height = `${el.scrollHeight}px`
-        }}
       />
       <Button
         size="lg"

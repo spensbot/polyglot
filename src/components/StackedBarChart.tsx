@@ -24,7 +24,7 @@ export function StackedBarChartLegend({
   entries: StackedBarEntry[]
 }) {
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-row gap-x-4 gap-y-0 flex-wrap">
       {entries.map((e) => (
         <div key={e.label} className="flex items-center gap-2">
           <div
