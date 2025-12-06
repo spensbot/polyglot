@@ -1,21 +1,22 @@
 # Todos
-- Curated words with debug frequency stats (min, max, avg) and created story frequency stats
+- Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
+- allow section translation
+- Dictation practice [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
+- Flash card mode for learning words
 - Add a nStoriesSinceLastHint field (for tracking recent learning / seen ratio).
-- Print lts ratio, bucket weights, % of story by bucket, other debug info, in debug tab
 - Parametrize target story length. Limit the number of recommended words to that length.
 
-# Future/Maybe
-- allow section translation
+# Future
+- Backend with auth
+- Cloud Save
 - Service Worker
-- Clickable history items (for re-reading/re-summarizing)
-- Auto-flow between views
 - Multi-Language Support
   - Spanish
   - French
-- Backend with auth
-- Try using Deep Seek's API (probably much higher % chinese training data)
-- Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
 - Ability to upload your own content/view human-made content (only applicable to high skill levels)
-- Flash card mode for learning words
-- Dictation practice
+
+# Maybe
+- Clickable history items (for re-reading/re-summarizing)
+- Auto-flow between views
+- Try using Deep Seek's API (probably much higher % chinese training data)
 - Local LLM with custom logit bias and API
