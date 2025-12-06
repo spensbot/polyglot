@@ -14,6 +14,7 @@ const SETUP_LABEL = "Setup"
 export function MenuBar({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
   const nav = useAppState((s) => s.nav)
+  const debugMode = useAppState((s) => s.debug.debugMode)
 
   return (
     <div className={cn("flex", className)}>
@@ -38,7 +39,7 @@ export function MenuBar({ className }: { className?: string }) {
         onClick={() => dispatch(navigate("Progress"))}
         active={nav === "Progress"}
       />
-      {import.meta.env.DEV && (
+      {(import.meta.env.DEV || debugMode) && (
         <MenuItem
           icon={<Bug className="text-fuchsia-400" />}
           onClick={() => dispatch(navigate("Debug"))}

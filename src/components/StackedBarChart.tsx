@@ -24,7 +24,7 @@ export function StackedBarChartLegend({
   entries: StackedBarEntry[]
 }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-row gap-4">
       {entries.map((e) => (
         <div key={e.label} className="flex items-center gap-2">
           <div
@@ -63,10 +63,13 @@ export function StackedBarChart({
             className={cn("h-full rounded-sm text-sm px-1")}
             style={{
               flexGrow: e.pct,
+              flexBasis: 0,
               backgroundColor: e.color,
             }}
           >
-            {(e.pct * 100).toFixed(0)}%
+            <p className="w-fit drop-shadow-[0_0_8px_rgba(0,0,0,1)]">
+              {(e.pct * 100).toFixed(0)}%
+            </p>
           </div>
         ))}
       </div>

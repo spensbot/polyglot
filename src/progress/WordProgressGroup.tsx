@@ -4,7 +4,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { dict } from "@/dictionary/Dictionary"
 import { WordProgressView } from "./WordProgressView"
-import { getInfo, getRarity, WordRarity } from "@/dictionary/WordRarity"
+import { rarityInfo, getRarity, WordRarity } from "@/dictionary/WordRarity"
 import { getOrCreate } from "@/util/collectionUtil"
 
 export function WordProgressGroup({
@@ -77,7 +77,7 @@ function WordFrequencyGroup({
       <div className={cn("flex flex-wrap gap-x-2 gap-y-1 items-center")}>
         <h4
           onClick={() => setCollapsed(!collapsed)}
-          className={cn("text-lg p-1 -m-1", getInfo(rarity).className)}
+          className={cn("text-lg p-1 -m-1", rarityInfo(rarity).className)}
         >
           {rarity}
         </h4>

@@ -61,6 +61,6 @@ export function getRarity(ranking: number): WordRarity {
   return 'Esoteric'; // Fallback, should not reach here
 }
 
-export function getInfo(rarity: WordRarity): WordRarityInfo {
+export function rarityInfo(rarity: WordRarity): WordRarityInfo {
   return WORD_RARITY_INFO[rarity];
 }

@@ -4,44 +4,25 @@ import {
   StackedBarEntry,
 } from "@/components/StackedBarChart"
 import { Word } from "@/dictionary/Word"
-import { cn } from "@/lib/utils"
-import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
+import {
+  preferredWordsByBucket,
+  targetBucketWeights,
+} from "@/progress/preferredWordsByBucket"
 import {
   buckets,
   isKnown,
   isLearning,
   learningToSeenRatio,
   Progress,
-  unseenWords,
 } from "@/progress/Progress"
-import { useAppState } from "@/state/hooks"
+import { useAppState, useCurrentStory } from "@/state/hooks"
 
-export function DebugView() {
-  const ltsRatio = useAppState((s) => learningToSeenRatio(s.progress))
-
-  return (
-    <div
-      className={cn("w-full h-full overflow-scroll", "flex flex-col gap-4 p-4")}
-    >
-      <h2 className="text-2xl">Debug View</h2>
-      <Item text="Learning to Seen Ratio:" value={ltsRatio.toFixed(2)} />
-      <WordBucketStats />
-    </div>
-  )
-}
-
-function Item({ text, value }: { text: string; value: string | number }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <p className="opacity-60">{text}</p>
-      <p className="bg-black font-mono px-1 text-amber-200">{value}</p>
-    </div>
-  )
-}
-
-function WordBucketStats() {
+export function WordBucketStats() {
   const app = useAppState((s) => s)
   const progressBuckets = buckets(app.progress)
+  const story = useCurrentStory((s) => s)
+  const ltsRatio = useAppState((s) => learningToSeenRatio(s.progress))
+  const targetWeights = targetBucketWeights(ltsRatio)
 
   const colorByBucket: Record<string, string> = {
     learning: "#f59e0b",
@@ -58,6 +39,14 @@ function WordBucketStats() {
     weight: words.length,
   }))
 
+  const targetEntries: StackedBarEntry[] = Object.entries(targetWeights).map(
+    ([key, weight]) => ({
+      label: key,
+      color: colorByBucket[key],
+      weight,
+    })
+  )
+
   const preferredWords = preferredWordsByBucket(app)
   const preferredBuckets = wordBuckets(preferredWords, app.progress)
   const preferredEntries: StackedBarEntry[] = Object.entries(
@@ -68,9 +57,7 @@ function WordBucketStats() {
     weight: count,
   }))
 
-  const storyData = app.storiesById[app.currentStory.storyId]
-  const storyWords =
-    storyData.status === "success" ? storyData.val.parsedAll : []
+  const storyWords = story.status === "success" ? story.val.parsedAll : []
   const storyBuckets = wordBuckets(
     storyWords.map((w) => w.word),
     app.progress
@@ -83,15 +70,22 @@ function WordBucketStats() {
     })
   )
 
+  const nUnique = new Set(storyWords.map((w) => w.word)).size
+  const nPreferredInStory = storyWords.filter((w) =>
+    preferredWords.includes(w.word)
+  ).length
+
   return (
     <div className="flex flex-col gap-2">
+      <h3 className="-mb-2">Words By User Bucket</h3>
       <StackedBarChart title="Progress" entries={progressEntries} />
+      <StackedBarChart title="Target (based on LTS)" entries={targetEntries} />
       <StackedBarChart
-        title={`Preferred Words (${preferredWords.length})`}
+        title={`Preferred (${preferredWords.length}) In Story (${nPreferredInStory})`}
         entries={preferredEntries}
       />
       <StackedBarChart
-        title={`Current Story Words (${storyWords.length})`}
+        title={`In Story (${storyWords.length}) (${nUnique} unique)`}
         entries={storyEntries}
       />
 

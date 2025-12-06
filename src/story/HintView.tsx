@@ -2,7 +2,7 @@ import { dict } from "@/dictionary/Dictionary"
 import { useAppState } from "@/state/hooks"
 import { cn } from "@/lib/utils"
 import { Word } from "@/dictionary/Word"
-import { getInfo, getRarity } from "@/dictionary/WordRarity"
+import { rarityInfo, getRarity } from "@/dictionary/WordRarity"
 
 interface Props {
   word: Word
@@ -67,7 +67,7 @@ function CharView({ char }: { char: string }) {
 
 function RarityView({ frequencyRanking }: { frequencyRanking: number }) {
   const rarity = getRarity(frequencyRanking)
-  const className = getInfo(rarity).className
+  const className = rarityInfo(rarity).className
 
   return (
     <p>

@@ -9,7 +9,7 @@ import { HistoryView } from "@/progress/HistoryView"
 import { MenuBar } from "./MenuBar"
 import "@/dictionary/Dictionary" // Ensure dictionary is loaded
 import { ModalsView } from "./ModalView"
-import { DebugView } from "./DebugView"
+import { DebugView } from "../debug/DebugView"
 
 function App() {
   const dispatch = useAppDispatch()

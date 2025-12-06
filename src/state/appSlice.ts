@@ -10,6 +10,7 @@ import { Grade } from '@/grade/Grade'
 import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
+import { DebugSchema } from '@/debug/DebugSchema'
 
 const NavSchema = z.literal(['Home', 'Progress', 'History', 'Debug'])
 export type Nav = z.infer<typeof NavSchema>
@@ -35,6 +36,7 @@ export const AppStateSchema = z.object({
   pastStories: z.array(StoryEvalSchema),
   secrets: SecretsSchema,
   modal: ModalSchema.nullable().default(null),
+  debug: DebugSchema
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -65,7 +67,8 @@ export const initialState: AppState = {
       apiKey: '',
     }
   },
-  modal: 'Setup'
+  modal: 'Setup',
+  debug: { debugMode: false }
 }
 
 export const appSlice = createSlice({
@@ -143,6 +146,9 @@ export const appSlice = createSlice({
     },
     setLanguageAlternate: (state, action: PayloadAction<boolean>) => {
       state.language.alternate = action.payload
+    },
+    setDebugMode: (state, action: PayloadAction<boolean>) => {
+      state.debug.debugMode = action.payload
     }
   },
 })
@@ -159,7 +165,8 @@ export const {
   setSummary,
   setOpenAiSecrets,
   setModal,
-  setLanguageAlternate
+  setLanguageAlternate,
+  setDebugMode
 } = appSlice.actions
 
 export default appSlice.reducer

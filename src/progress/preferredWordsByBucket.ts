@@ -6,7 +6,7 @@ import { Word } from "@/dictionary/Word";
 import { distributeByWeight } from "@/util/math/distributeByWeight";
 import { Log } from "@/util/Log";
 
-export const PREFERRED_WORDS_LIMIT = 200;
+export const PREFERRED_WORDS_LIMIT = 100;
 
 interface BucketWeights {
   learning: number;
@@ -15,14 +15,14 @@ interface BucketWeights {
   unseen: number;
 }
 
-const minLtsBucketWeights: BucketWeights = {
+export const minLtsBucketWeights: BucketWeights = {
   learning: 1.0,
   known: 0.0,
   familiar: 0.5,
   unseen: 0.3,
 }
 
-const maxLtsBucketWeights: BucketWeights = {
+export const maxLtsBucketWeights: BucketWeights = {
   learning: 0.1,
   known: 1.0,
   familiar: 0.1,
@@ -37,6 +37,10 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
   return result;
 }
 
+export function targetBucketWeights(ltsRatio: number): BucketWeights {
+  return lerpWeights(minLtsBucketWeights, maxLtsBucketWeights, ltsRatio);
+}
+
 /** Prints a list of words the LLM should prefer to use in stories by bucketing words in categories
  * - learning
  * - known
@@ -49,7 +53,7 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
 export function preferredWordsByBucket(state: AppState): Word[] {
   const { progress } = state
   const ltsRatio = learningToSeenRatio(progress)
-  const bucketWeights = lerpWeights(minLtsBucketWeights, maxLtsBucketWeights, ltsRatio)
+  const bucketWeights = targetBucketWeights(ltsRatio)
 
   Log.info("learning / seen ratio:", ltsRatio.toFixed(2))
   Log.info("bucket weights:", JSON.stringify(bucketWeights, null, 2))
