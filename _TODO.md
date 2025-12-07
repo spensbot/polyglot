@@ -1,6 +1,4 @@
 # Todos
-- remove boop input. Allow case-insensitive boop/no boop in summary input.
-- Try replacing colored text with white text on colored background
 - Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
 - allow section translation
 - Dictation practice [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)

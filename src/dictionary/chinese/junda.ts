@@ -1,7 +1,7 @@
 import { fetchResult } from '@/util/result/fetchResults';
 import { Char } from '../Word';
-import { prettyPinyin } from './prettyPinyin';
 import { rmap } from '@/util/result/Result';
+import { NumberedPinyin, prettyPinyin, PrettyPinyin } from './Pinyin';
 
 interface JundaEntryIn {
   n: number;
@@ -14,7 +14,7 @@ export interface JundaEntry {
   t: "Junda";
   frequencyRanking: number;
   simplified: Char;
-  pinyin: string;
+  pinyin: PrettyPinyin;
   definition: string;
 }
 
@@ -26,7 +26,7 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
       t: "Junda",
       frequencyRanking: entry.n,
       simplified: entry.char,
-      pinyin: prettyPinyin(entry.pin),
+      pinyin: prettyPinyin(entry.pin as NumberedPinyin),
       definition: entry.def,
     }])
   );

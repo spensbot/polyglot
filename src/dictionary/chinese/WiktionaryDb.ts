@@ -1,10 +1,11 @@
 import { Err, Ok, Result } from "@/util/result/Result"
+import { NumberedPinyin, prettyPinyin, PrettyPinyin } from "./Pinyin"
 
 export interface WiktionaryEntry {
   t: "Wiktionary"
   traditional: string
   simplified: string
-  pinyin: string
+  pinyin: PrettyPinyin
   definition: string
   /** The row number in the source TSV 
    * 1 = most frequent word
@@ -52,7 +53,7 @@ export class WiktionaryDb {
       const simplified = (cols[iSimp] ?? "").trim()
       let pinyin = (cols[iPin] ?? "").trim()
       if (pinyin.endsWith("5")) {
-        pinyin = pinyin.slice(0, -1)
+        pinyin = prettyPinyin(pinyin as NumberedPinyin)
       }
       const meaning = (cols[iMean] ?? "").trim()
 
@@ -63,8 +64,8 @@ export class WiktionaryDb {
         t: "Wiktionary",
         traditional,
         simplified,
-        pinyin,
-        definition: meaning,
+        pinyin: pinyin as PrettyPinyin,
+        definition: expandDictionaryCode(meaning),
         frequencyRanking: rank,
       }
 
@@ -94,4 +95,43 @@ export class WiktionaryDb {
   static empty(): WiktionaryDb {
     return new WiktionaryDb("")
   }
+}
+
+export function expandDictionaryCode(def: string): string {
+  const codeMap: Record<string, string> = {
+    "conj.": "(conjunction: connects clauses or sentences)",
+    "m.": "(classifier used with nouns)",
+    "det.": "(determiner: specifies which person/thing)",
+  };
+
+  // Pattern A: "conj.: and yet"
+  const colonMatch = def.match(/^(\w+\.)\s*:\s*(.*)$/);
+  if (colonMatch) {
+    const [, code, definitionText] = colonMatch;
+    const expanded = codeMap[code];
+    if (expanded) {
+      // Special case for m.
+      if (code === "m.") {
+        return `${definitionText} measure word ${expanded}`;
+      }
+      return `${definitionText} ${expanded}`;
+    }
+    return def;
+  }
+
+  // Pattern B: "m.[general]"
+  const bracketMatch = def.match(/^(\w+\.)\[(.+)\]$/);
+  if (bracketMatch) {
+    const [, code, definitionText] = bracketMatch;
+    const expanded = codeMap[code];
+    if (expanded) {
+      if (code === "m.") {
+        return `${definitionText} measure word ${expanded}`;
+      }
+      return `${definitionText} ${expanded}`;
+    }
+    return def;
+  }
+
+  return def;
 }
