@@ -2,6 +2,11 @@ import { dict } from "@/dictionary/Dictionary"
 import { cn } from "@/lib/utils"
 import { Word } from "@/dictionary/Word"
 import { rarityInfo, getRarity } from "@/dictionary/WordRarity"
+import {
+  ListenButton,
+  PronounceButton,
+} from "@/dictionary/speech/speechButtons"
+import { useAppState } from "@/state/hooks"
 
 interface Props {
   word: Word
@@ -12,6 +17,7 @@ export function HintView({ word, depth = 2 }: Props) {
   const definition = dict.define(word)
   const pinyin = dict.pinyin(word)
   const frequencyRanking = dict.frequncyRanking(word)
+  const language = useAppState((s) => s.language.learning)
 
   const chars = word.split("")
 
@@ -25,11 +31,14 @@ export function HintView({ word, depth = 2 }: Props) {
       onClick={(e) => e.preventDefault()}
     >
       {pinyin && (
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-center gap-2">
           <p>{pinyin}</p>
           {frequencyRanking && (
             <RarityView frequencyRanking={frequencyRanking} />
           )}
+          <div className="grow" />
+          <PronounceButton word={word} language={language} />
+          <ListenButton word={word} language={language} />
         </div>
       )}
       {depth > 1 && (

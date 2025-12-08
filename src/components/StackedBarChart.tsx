@@ -60,6 +60,7 @@ export function StackedBarChart({
       >
         {entriesWithPcts.map((e) => (
           <div
+            key={e.label}
             className={cn("h-full rounded-sm text-sm px-1")}
             style={{
               flexGrow: e.pct,

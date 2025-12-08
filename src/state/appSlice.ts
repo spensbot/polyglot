@@ -1,6 +1,6 @@
 import { getOrCreateWordStats, ProgressSchema, updateHint, updateProgressForCompletedStory } from '@/progress/Progress'
 import { STORY_0 } from '@/story/curatedStories'
-import { HintSchema, ParsedWord, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
+import { HintSchema, ParsedWord, StoryId, StoryIdSchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
@@ -31,7 +31,10 @@ export const AppStateSchema = z.object({
   hint: HintSchema.optional(),
   currentStory: StoryEvalSchema,
   storiesById: z.record(StoryIdSchema, StreamedStateSchema(ParsedStorySchema, ParsedStorySchema)),
-  language: LanguageSettingsSchema,
+  language: LanguageSettingsSchema.default({
+    learning: 'zh-Hans-CN',
+    native: 'en'
+  }),
   nav: NavSchema,
   pastStories: z.array(StoryEvalSchema),
   secrets: SecretsSchema,
@@ -56,7 +59,7 @@ export const initialState: AppState = {
     [STORY_0.id]: Streamed.success(initialStory)
   },
   language: {
-    learning: 'zh-simplified',
+    learning: 'zh-Hans-CN',
     native: 'en'
   },
   nav: 'Home',

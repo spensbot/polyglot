@@ -4,6 +4,7 @@ import { Provider } from "react-redux"
 import { store } from "./state/store.ts"
 import "./index.css"
 import App from "./app/App.tsx"
+import { Toaster } from "./components/ui/sonner.tsx"
 // import "@/firebase/initFirebase.ts"
 
 document.documentElement.classList.add("dark")
@@ -12,6 +13,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <App />
+      <Toaster theme="dark" position="top-center" />
     </Provider>
   </StrictMode>
 )

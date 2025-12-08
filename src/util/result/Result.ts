@@ -39,3 +39,8 @@ export function rmatch<T, U, E>(
     return onErr(result.err);
   }
 }
+
+export interface BaseError {
+  message: string
+  originalError?: any
+}

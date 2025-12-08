@@ -1,11 +1,17 @@
 import z from "zod";
 
-// There aren't official, separate language codes form simplified/traditional Chinese
-export const LearningLanguageSchema = z.literal("zh-simplified")
-export const NativeLanguageSchema = z.literal("en")
+// BCP 47 language codes for supported languages
+export const LanguageCodeSchema = z.literal(["en", "zh-Hans-CN", "zh-Hant-TW"]);
+export type LanguageCode = z.infer<typeof LanguageCodeSchema>
+
+export const LanguageNames: Record<LanguageCode, string> = {
+  "zh-Hans-CN": "Simplified Chinese",
+  "zh-Hant-TW": "Traditional Chinese",
+  "en": "English",
+}
 
 export const LanguageSettingsSchema = z.object({
-  learning: z.string(),
-  native: z.string(),
+  learning: LanguageCodeSchema.catch('zh-Hans-CN'),
+  native: LanguageCodeSchema.catch('en'),
   alternate: z.boolean().optional(), // e.g. for traditional vs simplified Chinese
 })
