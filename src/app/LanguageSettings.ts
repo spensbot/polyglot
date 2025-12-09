@@ -15,3 +15,4 @@ export const LanguageSettingsSchema = z.object({
   native: LanguageCodeSchema.catch('en'),
   alternate: z.boolean().optional(), // e.g. for traditional vs simplified Chinese
 })
+export type LanguageSettings = z.infer<typeof LanguageSettingsSchema>;

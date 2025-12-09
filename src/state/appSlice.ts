@@ -11,6 +11,8 @@ import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
 import { DebugSchema } from '@/debug/DebugSchema'
+import { TranslatedSection, TranslatedSectionSchema } from '@/dictionary/translation/TranslatedSection'
+import { AsyncState } from '@/util/AsyncState'
 
 const NavSchema = z.literal(['Home', 'Progress', 'History', 'Debug'])
 export type Nav = z.infer<typeof NavSchema>
@@ -25,10 +27,12 @@ export const ApiSecretsSchema = z.object({
 export const SecretsSchema = z.object({
   openai: ApiSecretsSchema,
 })
+export type Secrets = z.infer<typeof SecretsSchema>
 
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
+  translatedSentenceIdx: z.number().optional(),
   currentStory: StoryEvalSchema,
   storiesById: z.record(StoryIdSchema, StreamedStateSchema(ParsedStorySchema, ParsedStorySchema)),
   language: LanguageSettingsSchema.default({
@@ -152,6 +156,17 @@ export const appSlice = createSlice({
     },
     setDebugMode: (state, action: PayloadAction<boolean>) => {
       state.debug.debugMode = action.payload
+    },
+    setTranslatedSentenceIdx: (state, action: PayloadAction<number | undefined>) => {
+      state.translatedSentenceIdx = action.payload
+    },
+    setTranslation: (state, action: PayloadAction<{ sentenceIdx: number, translation: AsyncState<TranslatedSection> }>) => {
+      const { sentenceIdx, translation } = action.payload
+      const storyStreamed = state.storiesById[state.currentStory.storyId]
+      if (storyStreamed.status === 'success') {
+        const parsedStory = storyStreamed.val
+        parsedStory.translationBySentenceIdx[sentenceIdx] = translation
+      }
     }
   },
 })
@@ -169,26 +184,9 @@ export const {
   setOpenAiSecrets,
   setModal,
   setLanguageAlternate,
-  setDebugMode
+  setDebugMode,
+  setTranslatedSentenceIdx,
+  setTranslation
 } = appSlice.actions
 
 export default appSlice.reducer
-
-export function cleanupAppState(state: AppState): AppState {
-  if (state.currentStory.grade?.status !== 'success') {
-    delete state.currentStory.grade
-  }
-  for (const storyId in state.storiesById) {
-    const id = storyId as StoryId
-    const story = state.storiesById[id]
-    if (story?.status !== 'success') {
-      state.storiesById[id] = Streamed.idle()
-    }
-  }
-  for (const pastStory of state.pastStories) {
-    if (pastStory.grade?.status !== 'success') {
-      delete pastStory.grade
-    }
-  }
-  return state
-}

@@ -52,7 +52,11 @@ export function WordView({ word }: { word: ParsedWord }) {
           collisionPadding={20}
           className="focus:outline-none z-30"
         >
-          <HintView word={word.word} depth={hintLevel} />
+          <HintView
+            word={word.word}
+            sentenceIdx={word.loc.sentenceIdx}
+            depth={hintLevel}
+          />
           <Popover.Arrow className="fill-neutral-700" width={15} height={8} />
         </Popover.Content>
       </Popover.Portal>

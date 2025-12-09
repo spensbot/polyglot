@@ -6,25 +6,29 @@ import {
   ListenButton,
   PronounceButton,
 } from "@/dictionary/speech/speechButtons"
-import { useAppState } from "@/state/hooks"
+import { useAppDispatch, useAppState } from "@/state/hooks"
+import { Button } from "@/components/ui/button"
+import { setTranslatedSentenceIdx } from "@/state/appSlice"
 
 interface Props {
   word: Word
+  sentenceIdx?: number
   depth?: number
 }
 
-export function HintView({ word, depth = 2 }: Props) {
+export function HintView({ word, sentenceIdx, depth = 2 }: Props) {
   const definition = dict.define(word)
   const pinyin = dict.pinyin(word)
   const frequencyRanking = dict.frequncyRanking(word)
   const language = useAppState((s) => s.language.learning)
+  const dispatch = useAppDispatch()
 
   const chars = word.split("")
 
   return (
     <div
       className={cn(
-        "rounded bg-neutral-800 text-white p-2 max-w-90 relative border",
+        "rounded bg-neutral-800 text-white p-2 max-w-90 relative border flex flex-col",
         // "drop-shadow-[0_0_12px_rgba(14,165,233,1)]",
         "drop-shadow-[0_0_12px_rgba(0,0,0,1)]"
       )}
@@ -55,6 +59,17 @@ export function HintView({ word, depth = 2 }: Props) {
                 ))}
               </div>
             </>
+          )}
+          {sentenceIdx !== undefined && (
+            <Button
+              label="Translate Sentence"
+              size="sm"
+              variant="outline"
+              className="self-stretch"
+              onClick={() => {
+                dispatch(setTranslatedSentenceIdx(sentenceIdx))
+              }}
+            />
           )}
         </>
       )}

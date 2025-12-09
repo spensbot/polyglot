@@ -20,9 +20,14 @@ export type Story = z.infer<typeof StorySchema>;
 export const ParsedIdSchema = z.number().brand("parsedId");
 export type ParsedId = z.infer<typeof ParsedIdSchema>;
 
+export const StoryLocationSchema = z.object({
+  sentenceIdx: z.number()
+})
+
 export const ParsedWordSchema = z.object({
   parsedId: ParsedIdSchema,
   word: z.string().brand("Word"),
+  loc: StoryLocationSchema.default({ sentenceIdx: 0 }),
 });
 export type ParsedWord = z.infer<typeof ParsedWordSchema>;
 

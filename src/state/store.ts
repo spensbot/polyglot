@@ -1,7 +1,8 @@
 import { combineReducers, configureStore, PayloadAction, ThunkAction, UnknownAction } from '@reduxjs/toolkit'
-import appReducer, { AppStateSchema, cleanupAppState, initialState } from './appSlice'
+import appReducer, { AppStateSchema, initialState } from './appSlice'
 import { SaveManager } from '@/util/SaveManager'
 import { Log } from '@/util/Log'
+import { cleanupAppState } from './cleanupAppState'
 
 const saveManager = new SaveManager({
   debounce_s: 3,
@@ -40,7 +41,10 @@ function rootReducer(state: ReturnType<typeof baseReducer> | undefined, action: 
   }
   if (action.type === RESET_STATE) {
     return {
-      app: initialState
+      app: {
+        ...initialState,
+        secrets: state.app.secrets
+      }
     }
   }
   return baseReducer(state, action)

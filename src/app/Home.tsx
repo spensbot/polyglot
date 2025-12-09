@@ -1,12 +1,15 @@
+import { TranslatedSentenceModal } from "@/dictionary/translation/TranslatedSentenceModal"
 import { GradeView } from "@/grade/GradeView"
 import { SummaryInput } from "@/grade/SummaryInput"
 import { cn } from "@/lib/utils"
 import { clearHint } from "@/state/appSlice"
+import { useAppState } from "@/state/hooks"
 import { StoryView } from "@/story/StoryView"
 import { wrapClick } from "@/util/wrapClick"
 import { useDispatch } from "react-redux"
 
 export function Home() {
+  const translatedSentenceIdx = useAppState((s) => s.translatedSentenceIdx)
   const dispatch = useDispatch()
   return (
     <div
@@ -28,6 +31,9 @@ export function Home() {
         <ProgressOverview className="min-w-0" />
       </div> */}
       <GradeView className="absolute inset-0 bg-black/50 z-40" />
+      {translatedSentenceIdx !== undefined && (
+        <TranslatedSentenceModal sentenceIdx={translatedSentenceIdx} />
+      )}
     </div>
   )
 }

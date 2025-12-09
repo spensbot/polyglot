@@ -18,3 +18,8 @@ function createRecord<K extends string, T>(
 
   return partial as Record<K, T>
 }
+
+export function last<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) return undefined;
+  return arr[arr.length - 1];
+}

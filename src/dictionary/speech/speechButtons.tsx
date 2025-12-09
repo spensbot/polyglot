@@ -29,7 +29,10 @@ export function PronounceButton({ word, language }: SpeechProps) {
   }
 
   return (
-    <button onClick={play} className="p-1">
+    <button
+      onClick={play}
+      className="p-1 focus-visible:ring-0 focus-visible:border-transparent"
+    >
       {isPlaying ? <AudioWaveform className="animate-pulse" /> : <Volume2 />}
     </button>
   )
@@ -62,7 +65,10 @@ export function ListenButton({ word, language }: SpeechProps) {
   }
 
   return (
-    <button onClick={listen_} className="p-1 flex items-center flex-wrap gap-2">
+    <button
+      onClick={listen_}
+      className="p-1 flex items-center flex-wrap gap-2 focus-visible:ring-0 focus-visible:border-transparent"
+    >
       {heardChars === null ? <Mic /> : <ListeningIndicator />}
       {heardChars && (
         <div>
