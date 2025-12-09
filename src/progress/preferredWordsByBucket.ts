@@ -17,17 +17,17 @@ interface BucketWeights {
 
 /** The preferred mixture of words based on the minimum learning to seen ratio (user hasn't looked up anything) */
 export const minHsRatioBucketWeights: BucketWeights = {
-  learning: 1.0,
+  learning: 0.1,
   known: 0.0,
   familiar: 0.5,
-  unseen: 0.3,
+  unseen: 0.5,
 }
 
 /** The preferred mixture of words based on the maximum learning to seen ratio (user has looked up every word they see) */
 export const maxHsRatioBucketWeights: BucketWeights = {
   learning: 0.1,
   known: 1.0,
-  familiar: 0.1,
+  familiar: 0.2,
   unseen: 0.03,
 }
 

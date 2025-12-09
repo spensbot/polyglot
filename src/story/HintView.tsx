@@ -65,7 +65,7 @@ export function HintView({ word, sentenceIdx, depth = 2 }: Props) {
               label="Translate Sentence"
               size="sm"
               variant="outline"
-              className="self-stretch"
+              className="self-stretch mt-2"
               onClick={() => {
                 dispatch(setTranslatedSentenceIdx(sentenceIdx))
               }}
