@@ -125,7 +125,6 @@ function TranslatedSectionView({
       },
       TranslatedSectionSchema
     ).then((result) => {
-      Log.temp("Translated Section Result: " + JSON.stringify(result))
       setTranslation(Async.fromResult(result))
     })
   }, [section, languageSettings])

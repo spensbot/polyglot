@@ -8,9 +8,14 @@ export function ProgressBar({
   className?: string
 }) {
   return (
-    <div className={cn("bg-white/10 relative", className)}>
+    <div
+      className={cn(
+        "bg-white/10 relative rounded-full overflow-hidden",
+        className
+      )}
+    >
       <div
-        className="bg-blue-500 absolute top-0 left-0 bottom-0"
+        className="bg-blue-500 absolute top-0 left-0 bottom-0 rounded-full m-0.5"
         style={{
           width: `${percent}%`,
         }}

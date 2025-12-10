@@ -38,9 +38,6 @@ function updateSeen(word: WordProgress, count: number) {
   if (word.nStoriesSinceLastHint !== 0 && word.nSeenSinceLastHint !== undefined) {
     word.nSeenSinceLastHint += count
   }
-  if (word.nStoriesSinceLastHint !== undefined) {
-    word.nStoriesSinceLastHint += 1
-  }
 }
 
 export function updateProgressForCompletedStory(progress: Progress, words: Word[]) {
@@ -54,6 +51,12 @@ export function updateProgressForCompletedStory(progress: Progress, words: Word[
   wordCounts.forEach((count, w) => {
     const stats = getOrCreateWordStats(progress.wordsSeen, w)
     updateSeen(stats, count)
+  })
+
+  Object.values(progress.wordsSeen).forEach(wp => {
+    if (wp.nStoriesSinceLastHint !== undefined) {
+      wp.nStoriesSinceLastHint += 1
+    }
   })
 
   const knownWordsAfterCompletion = knownWords(progress).map(w => w.word)

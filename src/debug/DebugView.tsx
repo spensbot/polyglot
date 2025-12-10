@@ -4,13 +4,9 @@ import { WordStatusStats } from "./WordStatusStats"
 import { WordFrequencyStats } from "./WordFrequencyStats"
 import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
 import { WordOverview } from "./WordOverview"
-import {
-  hintToSeenRatio_recent,
-  RECENT_STORIES_THRESHOLD,
-} from "@/progress/hintToSeenRatio"
+import { DebugHintToSeen } from "./DebugHintToSeen"
 
 export function DebugView() {
-  const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
   const app = useAppState((s) => s)
 
   const preferredWords = preferredWordsByBucket(app)
@@ -29,10 +25,8 @@ export function DebugView() {
       )}
     >
       <h2 className="text-2xl">Debug View</h2>
-      <Item
-        text={`Hint / Seen Ratio (last ${RECENT_STORIES_THRESHOLD} stories):`}
-        value={hsRatio.toFixed(2)}
-      />
+
+      <DebugHintToSeen className={statsClassName} />
       <WordOverview className={statsClassName} />
       <WordStatusStats className={statsClassName} />
       <WordFrequencyStats className={statsClassName} />
@@ -54,15 +48,6 @@ export function DebugView() {
           )
         })}
       </div>
-    </div>
-  )
-}
-
-function Item({ text, value }: { text: string; value: string | number }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <p className="opacity-60">{text}</p>
-      <p className="bg-black font-mono px-1 text-amber-200">{value}</p>
     </div>
   )
 }

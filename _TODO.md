@@ -1,6 +1,4 @@
-# Todos
-- Figure out what is wrong with hint/seen ratio
-- allow section translation
+# To-dos
 - Flash card mode for learning words
 
 # Future

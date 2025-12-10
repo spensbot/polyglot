@@ -167,7 +167,16 @@ export const appSlice = createSlice({
         const parsedStory = storyStreamed.val
         parsedStory.translationBySentenceIdx[sentenceIdx] = translation
       }
-    }
+    },
+
+    DEBUG_hintAll: (app) => {
+      const story = app.storiesById[app.currentStory.storyId]
+      if (story.status !== 'success') return
+      story.val.parsedAll.forEach(pw => {
+        const stats = getOrCreateWordStats(app.progress.wordsSeen, pw.word)
+        updateHint(stats)
+      })
+    },
   },
 })
 
@@ -186,7 +195,9 @@ export const {
   setLanguageAlternate,
   setDebugMode,
   setTranslatedSentenceIdx,
-  setTranslation
+  setTranslation,
+
+  DEBUG_hintAll
 } = appSlice.actions
 
 export default appSlice.reducer

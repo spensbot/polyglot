@@ -28,7 +28,7 @@ export function HintView({ word, sentenceIdx, depth = 2 }: Props) {
   return (
     <div
       className={cn(
-        "rounded bg-neutral-800 text-white p-2 max-w-90 relative border flex flex-col",
+        "rounded bg-neutral-800 text-white p-2 max-w-[min(25rem,95vw)] relative border flex flex-col",
         // "drop-shadow-[0_0_12px_rgba(14,165,233,1)]",
         "drop-shadow-[0_0_12px_rgba(0,0,0,1)]"
       )}
