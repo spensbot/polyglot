@@ -2,15 +2,15 @@ import { cn } from "@/lib/utils"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 import { WordStatusStats } from "./WordStatusStats"
 import { WordFrequencyStats } from "./WordFrequencyStats"
-import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
 import { WordOverview } from "./WordOverview"
 import { DebugHintToSeen } from "./DebugHintToSeen"
 import { DebugPreferredBuckets } from "./DebugPreferredBuckets"
+import { getPreferredWordsV3 } from "@/progress/preferredWordsV3"
 
 export function DebugView() {
   const app = useAppState((s) => s)
 
-  const preferredWords = preferredWordsByBucket(app)
+  const preferredWords = getPreferredWordsV3(app)
   const storyWords = useCurrentStory((s) =>
     s.status === "success" ? s.val.parsedAll.map((w) => w.word) : []
   )

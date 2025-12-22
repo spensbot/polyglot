@@ -5,8 +5,7 @@ import { combinedBias, llmBias_frequency, llmBias_recency } from "./LlmBias";
 import { Word } from "@/dictionary/Word";
 import { distributeByWeight } from "@/util/math/distributeByWeight";
 import { hintToSeenRatio_recent } from "./hintToSeenRatio";
-
-export const PREFERRED_WORDS_LIMIT = 100;
+import { getBiasCompareCb, PREFERRED_WORDS_LIMIT } from "./preferredWordUtils";
 
 interface BucketWeights {
   learning: number;
@@ -41,12 +40,13 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
   return result;
 }
 
-export function targetBucketWeights(hsRatio: number): BucketWeights {
+export function targetBucketWeights_deprecated(hsRatio: number): BucketWeights {
   const skewed = Math.pow(hsRatio, 0.5)
   return lerpWeights(minHsRatioBucketWeights, maxHsRatioBucketWeights, skewed);
 }
 
-/** Prints a list of words the LLM should prefer to use in stories by bucketing words in categories
+/** @deprecated
+ * Prints a list of words the LLM should prefer to use in stories by bucketing words in categories
  * - learning
  * - known
  * - familiar
@@ -55,16 +55,16 @@ export function targetBucketWeights(hsRatio: number): BucketWeights {
  * Sorting them based on frequency and recency
  * And distributing them according to the user's hint / seen ratio
  */
-export function preferredWordsByBucket(state: AppState): Word[] {
+export function preferredWordsByBucket_deprecated(state: AppState): Word[] {
   const { progress } = state
   const hintToSeenRatio = hintToSeenRatio_recent(state)
-  const bucketWeights = targetBucketWeights(hintToSeenRatio)
+  const bucketWeights = targetBucketWeights_deprecated(hintToSeenRatio)
 
   const llmBias = combinedBias([
     llmBias_frequency(),
     llmBias_recency(state),
   ])
-  const cmp = getCompareFunction(llmBias)
+  const cmp = getBiasCompareCb(llmBias)
 
   let { learning, known, familiar } = buckets(progress)
 
@@ -81,17 +81,4 @@ export function preferredWordsByBucket(state: AppState): Word[] {
   ])
 
   return words.slice(0, PREFERRED_WORDS_LIMIT)
-}
-
-export function printPreferredWordsByBucket(state: AppState): string {
-  const words = preferredWordsByBucket(state)
-  const n = words.length
-  return words.map((w, i) => `${i + 1}. ${w}${i === 0 ? " (highest priority)" : ""}${i === n - 1 ? " (lowest priority)" : ""}`)
-    .join("\n")
-}
-
-const getCompareFunction = (llmBias: Record<Word, number>) => (a: Word, b: Word): number => {
-  const biasA = llmBias[a] ?? 0.0
-  const biasB = llmBias[b] ?? 0.0
-  return biasB - biasA
 }

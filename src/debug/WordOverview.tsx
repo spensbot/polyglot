@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils"
-import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
+import { getPreferredWordsV3 } from "@/progress/preferredWordsV3"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 
 export function WordOverview({ className }: { className?: string }) {
   const app = useAppState((s) => s)
   const story = useCurrentStory((s) => s)
-  const preferred = preferredWordsByBucket(app)
+  const preferred = getPreferredWordsV3(app)
 
   if (story.status !== "success") return "Word Overview: Story Not Loaded"
 

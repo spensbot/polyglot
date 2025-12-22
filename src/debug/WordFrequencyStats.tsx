@@ -12,7 +12,7 @@ import {
   WORD_RARITY_LIST,
 } from "@/dictionary/WordRarity"
 import { cn } from "@/lib/utils"
-import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
+import { getPreferredWordsV3 } from "@/progress/preferredWordsV3"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 import { getOrCreate } from "@/util/collectionUtil"
 
@@ -30,7 +30,7 @@ export function WordFrequencyStats({ className }: { className?: string }) {
     }
   })
 
-  const preferredWords = preferredWordsByBucket(app)
+  const preferredWords = getPreferredWordsV3(app)
   const preferredBuckets = freqBuckets(preferredWords)
   const preferredEntries: StackedBarEntry[] = WORD_RARITY_LIST.map((rarity) => {
     const count = preferredBuckets.get(rarity)
@@ -52,11 +52,6 @@ export function WordFrequencyStats({ className }: { className?: string }) {
       weight: count,
     }
   }).filter((e) => e !== null)
-
-  const nUnique = new Set(story.val.parsedAll.map((w) => w.word)).size
-  const nPreferredInStory = story.val.parsedAll.filter((w) =>
-    preferredWords.includes(w.word)
-  ).length
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>

@@ -2,12 +2,16 @@ import { infoSection } from '@/util/llm/promptUtil'
 import { knownWords } from '@/progress/Progress'
 import { computeLevel, Level } from '@/progress/Level'
 import { AppState } from '@/state/appSlice'
-import { printPreferredWordsByBucket } from '@/progress/preferredWordsByBucket'
+import { getPreferredWordsV3 } from '@/progress/preferredWordsV3'
+import { printPreferredWords } from '@/progress/preferredWordUtils'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
 export function createStoryPrompt(appState: AppState): string {
   const level = computeLevel(knownWords(appState.progress).length)
+
+  const preferredWords = getPreferredWordsV3(appState)
+  const preferredWordsPrinted = printPreferredWords(preferredWords)
 
   return `
 You are an expert language learning tutor. Your task is to create a story in a foreign language that is tailor-made for the user's proficiency in that language.
@@ -23,7 +27,7 @@ Important Requirements:
 ${infoSection(`Here's an overview of the user's language level. The story MUST be appropriate for this level`, `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
 
 ${infoSection(`Preferred Words: The story must prioritize the following vocabulary words.
-Plan the story to use as many preferred words as possible while maintaining natural grammar and a cohesive, focused narrative.`, printPreferredWordsByBucket(appState))}
+Plan the story to use as many preferred words as possible while maintaining natural grammar and a cohesive, focused narrative.`, preferredWordsPrinted)}
 `
 }
 

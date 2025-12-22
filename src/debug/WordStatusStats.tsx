@@ -5,21 +5,15 @@ import {
 } from "@/components/StackedBarChart"
 import { Word } from "@/dictionary/Word"
 import { cn } from "@/lib/utils"
-import { hintToSeenRatio_recent } from "@/progress/hintToSeenRatio"
-import {
-  preferredWordsByBucket,
-  targetBucketWeights,
-} from "@/progress/preferredWordsByBucket"
 import { buckets, isKnown, isLearning, Progress } from "@/progress/Progress"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 import { colorByBucket } from "./statusBuckets"
+import { getPreferredWordsV3 } from "@/progress/preferredWordsV3"
 
 export function WordStatusStats({ className }: { className?: string }) {
   const app = useAppState((s) => s)
   const progressBuckets = buckets(app.progress)
   const story = useCurrentStory((s) => s)
-  const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
-  const targetWeights = targetBucketWeights(hsRatio)
 
   const progressEntries: StackedBarEntry[] = Object.entries(
     progressBuckets
@@ -29,15 +23,7 @@ export function WordStatusStats({ className }: { className?: string }) {
     weight: words.length,
   }))
 
-  const targetEntries: StackedBarEntry[] = Object.entries(targetWeights).map(
-    ([key, weight]) => ({
-      label: key,
-      color: colorByBucket[key],
-      weight,
-    })
-  )
-
-  const preferredWords = preferredWordsByBucket(app)
+  const preferredWords = getPreferredWordsV3(app)
   const preferredBuckets = wordBuckets(preferredWords, app.progress)
   const preferredEntries: StackedBarEntry[] = Object.entries(
     preferredBuckets
@@ -63,11 +49,7 @@ export function WordStatusStats({ className }: { className?: string }) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <h3 className="">Words By Status</h3>
-      <StackedBarChart title="All-Time" entries={progressEntries} />
-      <StackedBarChart
-        title="Target (based on H/S Ratio)"
-        entries={targetEntries}
-      />
+      <StackedBarChart title="User Progress" entries={progressEntries} />
       <StackedBarChart title={`Preferred`} entries={preferredEntries} />
       <StackedBarChart title={`In Story`} entries={storyEntries} />
 

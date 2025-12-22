@@ -23,3 +23,17 @@ export function last<T>(arr: T[]): T | undefined {
   if (arr.length === 0) return undefined;
   return arr[arr.length - 1];
 }
+
+/** unbiased shuffle (Fisher–Yates)
+ * Created by ChatGPT
+ */
+export function shuffle<T>(as: T[]): T[] {
+  const result = [...as];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
